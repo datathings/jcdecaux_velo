@@ -1,0 +1,96 @@
+use util;
+
+var stations_by_geo: nodeGeo<node<Station>>;
+
+// will contain all contracts indexed by contract name
+var contracts_by_name: nodeIndex<String, node<Contract>>;
+
+type Station {
+    number: int;
+    position: geo;
+
+    // will contain all static information about the Station
+    // you will want to put information that is not important inside a node to avoid loading it into memory on every Station resolve
+    detail: node<StationDetail>;
+
+    // will contain all dynamic data of a station indexed by the last update timestamp
+    records: nodeTime<StationRecord>;
+
+    //The stations Contract,  Belongs To relationship in sql
+    contract: node<Contract>;
+
+    profile: node<StationProfile>;
+}
+
+type StationDetail {
+    name: String;
+    address: String;
+    banking: bool;
+    bonus: bool;
+}
+
+type StationRecord {
+    status: StationStatus;
+    bike_stands: int;
+    available_bike_stands: int;
+    available_bikes: int;
+}
+enum StationStatus {
+    open("open");
+    closed("closed");
+}
+
+type StationProfile {
+    //24 * 7 slots, one for each hour of the week, will help to visualize the station activity in a typical week
+    hourlyProfile: GaussianProfile;
+
+    fn updateProfile(t: time, data: StationRecord) {
+        if (data.bike_stands > 0) {
+            //convert the time to the correct slot
+            var quantizer = Quantizer::new();
+            quantizer.configure([DenseDim { min: 0, max: 6, step: 1 }, DenseDim { min: 0, max: 23, step: 1 }]);
+            var date = t.toDateUTC();
+            var slot = quantizer.quantize([date.dayOfWeek(), date.hours()]);
+
+            this.hourlyProfile.add(slot, data.available_bikes as float / data.bike_stands as float);
+        }
+    }
+
+    fn profileToTable(): Table {
+        var table = Table::new(24);
+
+        var endSlot = 24 * 7;
+        var startSlot = 0;
+
+        while (startSlot < endSlot) {
+            var row = startSlot / 24;
+            var col = startSlot % 24;
+
+            var val = this.hourlyProfile.avg(startSlot);
+
+            table.set(row, col, val);
+            startSlot++;
+        }
+        return table;
+    }
+}
+
+type Contract {
+    name: String;
+    commercial_name: String?;
+    country_code: String?;
+    cities: Array<String>?;
+
+    //will contain a list of refs to all stations of the contract indexed by the number property, Has Many relationship in sql
+    stations: nodeIndex<int, node<Station>>;
+}
+
+
+
+
+
+
+
+
+
+

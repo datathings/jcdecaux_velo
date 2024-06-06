@@ -1,0 +1,79 @@
+app-home {
+  display: grid;
+
+  .profile {
+    padding: var(--spacing);
+    position: relative;
+
+    gui-heatmap {
+      --m-left: 65px;
+
+      width: 100%;
+      height: 400px;
+    }
+
+    gui-chart {
+      width: 100%;
+      height: 400px;
+    }
+
+    .empty-profile {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg-2);
+      opacity: 0.9;
+      display: flex;
+      justify-content: center;
+      z-index: 10;
+
+      p {
+        font-size: 2rem;
+        text-align: center;
+      }
+    }
+
+  }
+
+
+
+  /**Small devices **/
+  @media (max-width: 991px) {
+    article {
+      display: flex;
+      flex-direction: column;
+
+      app-map {
+        height: 450px;
+      }
+
+      .profile gui-heatmap {
+        --color-scale-m-right: 15px;
+        --m-right: 35px;
+      }
+
+    }
+  }
+
+  @media (min-width: 992px) {
+    article {
+      display: grid;
+      grid-template-columns: 1fr 700px;
+
+      .profile {
+        border-left: 2px solid var(--color-1);
+      }
+
+      .empty-profile {
+        align-items: center;
+      }
+
+      app-map {
+        flex: 1;
+      }
+    }
+  }
+
+}

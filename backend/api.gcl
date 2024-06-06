@@ -1,0 +1,68 @@
+use model; 
+use util;
+
+
+// Object to be used by the ui
+type StationDTO {
+    ref: node<Station>;
+    coords: geo;
+    detail: StationDetail;
+    record: StationRecord?;
+    last_update: time;
+}
+
+// From: the top right corner of the map
+// To: the bottom left corner of the map
+@expose
+fn getStations(from: geo, to: geo, t: time?): Array<StationDTO> {
+    var result: Array<StationDTO> = [];
+
+    // greycat's geo index supports range queries
+    for (coords, station in stations_by_geo[from..to]) {
+        if (t == null) {
+            t = station->records.lastTime();
+        }
+
+        if (t == null) {
+            continue;
+        }
+
+        //will return the last record of the station at the specified time or the closest one before
+        var stationData = station->records.resolveAt(t);
+
+        result.add(StationDTO {
+                ref: station,
+                coords: coords,
+                detail: station->detail.resolve(),
+                record: stationData,
+                last_update: t
+            });
+    }
+
+    return result;
+}
+
+
+//Return the profile of a station to visualize as a Heatmap  where the cols are the hours of the day and the rows are the days of the week
+@expose
+fn getStationProfile(station: node<Station>): Table {
+    return station->profile->profileToTable();
+}
+
+@expose
+fn getStationTimeSeries(station: node<Station>, from: time?, to: time?): Table {
+    //Will return 1000 points on the specifed range or total if none specifed using the adaptative sampling method
+    var table = nodeTime::sample([station->records], from, to, 1000, SamplingMode::adaptative, null, null);
+
+    //The returned Talbe  has on col 0 the timestamp and on col 1 the StationData Object, but for the chart visualization we currently do not support objects so we
+    //leverage our  table mapping to extract the availableBikes from the StationData object into its own column
+    var mapping = TableColumnMapping {
+        column: 1, //The column where the object is
+        extractors: ["available_bikes"] //The fields to extract
+    };
+
+    //The mapping will add a new column with the extracted field
+
+    var mappedTable = Table::applyMappings(table, [mapping]);
+    return mappedTable;
+}

@@ -1,0 +1,54 @@
+@include("backend");
+
+use importer;
+use runtime;
+use io;
+
+//Your apps entry point
+fn main() {
+    //Always import the data on startup, for simplicity purposes
+    importLocalData();
+
+    //Check if the api key is present, if so start the scheduler
+    var key = File::open("api_key.txt");
+    if (key != null) {
+        startImportingScheduler();
+    }
+}
+
+@expose
+@write
+fn startImportingScheduler() {
+    var periodicStationTask = PeriodicTask {
+        arguments: null,
+        every: 5_min,
+        user_id: 1,
+        function: importer::importStations,
+        start: time::now()
+    };
+
+    var periodicContractTask = PeriodicTask {
+        arguments: null,
+        every: 1_day,
+        user_id: 1,
+        function: importer::importContracts,
+        start: time::now()
+    };
+
+    //Greycats own integrated job scheduler refer to the documentation for more information unde Features -> Periodic
+    PeriodicTask::set([periodicContractTask, periodicStationTask]);
+}
+
+
+
+//Boostrap the data, for demo purposes
+@write
+fn importLocalData() {
+    importData();
+    importRecords();
+}
+
+fn exportLocalData() {
+    exportData();
+    exportRecords();
+}

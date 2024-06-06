@@ -1,0 +1,320 @@
+use io;
+use model;
+use runtime;
+use util;
+
+var jcdeaux_key: String?;
+
+fn getKey(): String {
+    if (jcdeaux_key == null) {
+        var tr = TextReader::new("api_key.txt");
+        jcdeaux_key = tr.readLine();
+    }
+
+    return jcdeaux_key!!;
+}
+
+
+@write
+task importContracts() {
+    var apiKey = jcdeaux_key ?? getKey();
+
+    var headers = [HttpHeader { name: "accept", value: "application/json" }];
+    //Will return an array of objects with all the contracts
+    var data = Http::get("https://api.jcdecaux.com/vls/v1/contracts?apiKey=${apiKey}", headers) as any?;
+
+    //Let's get or create the contracts list in the graph, thanks to  ** ?= ** we can create the list if it doesn't exist
+    contracts_by_name ?= nodeIndex<String, node<Contract>>::new();
+
+    //We append an ? to data in case it's null
+    //Since in greycat all json objects are converted to a Map we can explicitly specify it in the for loop
+    for (_, item: Map in data?) {
+        //The name works as the identifier of the contract as explained in the JCDecaux API documentation
+        var name = item.get("name") as String;
+        //We check if the contract does not exists in the graph
+        if (contracts_by_name.get(name) == null) {
+            //Create the contract typed object
+            var contract = Contract {
+                name: name,
+                cities: item.get("cities") as Array<String>,
+                commercial_name: item.get("commercial_name") as String,
+                country_code: item.get("country_code") as String,
+                stations: nodeIndex<int, node<Station>>::new(),
+            };
+
+            //We create the contract node
+            //This will make the contract persistent in the graph, for more information about **nodes** check the documentation
+            var contractRef = node<Contract>::new(contract);
+
+            //We add the contract to the index declared at top the biking module
+            contracts_by_name.set(name, contractRef);
+        }
+    }
+}
+
+@write
+task importStations() {
+    var apiKey = jcdeaux_key ?? getKey();
+
+    var headers = [HttpHeader { name: "accept", value: "application/json" }];
+
+    //Will return an array of objects with all the contracts
+    var data = Http::get("https://api.jcdecaux.com/vls/v1/stations?apiKey=${apiKey}", headers) as any?;
+
+    stations_by_geo ?= nodeGeo<node<Station>>::new();
+
+    for (_, item: Map in data?) {
+        //Get the station number, which is unique by contract
+        var number = item.get("number") as int;
+
+        //Get the contract name to get our locally stored contract indexed by contract name
+        var contractName = item.get("contract_name") as String;
+        var contract = contracts_by_name.get(contractName);
+
+        if (contract == null) {
+            //If the contract does not exist we skip the station, thiws could happen if since the last time we fetched the contracts a new contract with stations has been added, 
+            // We could refetch the contracts but for the sake of simplicity we will just skip the station
+            continue;
+        }
+
+        //Convert the position to a greycat geo object
+        //here again we tell the lsp it's a Map since all json objects are converted to a Map
+        var coordsMap = item.get("position") as Map;
+        var coords = geo::new(coordsMap.get("lat") as float, coordsMap.get("lng") as float);
+
+
+        var stationRef = contract->stations.get(number);
+
+        if (stationRef == null) {
+            var stationProfile = StationProfile {
+                hourlyProfile: GaussianProfile::new(24 * 7)
+            };
+
+            var details = StationDetail {
+                name: item.get("name") as String,
+                address: item.get("address") as String,
+                banking: item.get("banking") as bool,
+                bonus: item.get("bonus") as bool,
+            };
+
+            var station = Station {
+                number: number,
+                position: coords,
+                detail: node<StationDetail>::new(details),
+                records: nodeTime<StationRecord>::new(),
+                contract: contract,
+                profile: node<StationProfile>::new(stationProfile)
+            };
+
+            stationRef = node<Station>::new(station);
+            stations_by_geo.set(coords, stationRef);
+
+            //We add the station to the contract
+            contract->stations.set(number, stationRef);
+        }
+
+
+
+        //timestamp of the last update
+        var lastUpdate = (item.get("last_update") as int?) ?? time::now().to(DurationUnit::milliseconds);
+        //convert the timestamp to a greycat time
+        var t = time::new(lastUpdate, DurationUnit::milliseconds);
+
+        //We check if we alraedy have the data for this timestamp.
+        if (stationRef->records.getAt(t) == null) {
+            var record = StationRecord {
+                status: stationStatusImportMapper(item.get("status") as String),
+                available_bikes: item.get("available_bikes") as int,
+                available_bike_stands: item.get("available_bike_stands") as int,
+                bike_stands: item.get("bike_stands") as int,
+            };
+            stationRef->records.setAt(t, record);
+            stationRef->profile->updateProfile(t, record);
+        }
+    }
+}
+
+
+
+//This function will map the string status to the enum
+fn stationStatusImportMapper(string: String): StationStatus {
+    if (string == "OPEN") {
+        return StationStatus::open;
+    } else {
+        return StationStatus::closed;
+    }
+}
+
+//This function will map the enum status to the string
+fn stationStatusExportMapper(status: StationStatus): String {
+    if (status == StationStatus::open) {
+        return "OPEN";
+    } else {
+        return "CLOSED";
+    }
+}
+
+
+
+
+/** The following code is to simply allow to load and dump data to launch the app with some data without requiring an api key*/
+
+fn exportRecords() {
+    for (_, contract in contracts_by_name) {
+        for (number, station in contract->stations) {
+            var cr = CsvWriter::new("tmp/${contract->name}_${number}.csv", CsvFormat {});
+
+            for (key, data in station->records) {
+                var line = [
+                    key.to(DurationUnit::milliseconds),
+                    stationStatusExportMapper(data.status),
+                    data.available_bikes,
+                    data.available_bike_stands,
+                    data.bike_stands
+                ];
+
+                cr.write(line);
+            }
+        }
+    }
+}
+
+
+//export to a generic format
+fn exportData() {
+    var fw = JsonWriter::new("tmp/data.ndjson");
+
+    for (_, contractRef in contracts_by_name) {
+        var contract = contractRef.resolve();
+        var contractObj = {
+            name: contract.name,
+            cities: contract.cities,
+            commercial_name: contract.commercial_name,
+            country_code: contract.country_code,
+            stations: []
+        };
+        for (_, value in contract.stations) {
+            var station = value.resolve();
+            var stationObj = {
+                number: station.number,
+                position: {
+                    lat: station.position.lat(),
+                    lng: station.position.lng()
+                },
+                detail: station.detail.resolve(),
+            };
+            contractObj.stations.add(stationObj);
+        }
+        fw.writeln(contractObj);
+    }
+}
+
+@write
+fn importData() {
+    var fr = JsonReader::new("tmp/data.ndjson").ignore_types();
+
+    contracts_by_name ?= nodeIndex<String, node<Contract>>::new();
+    stations_by_geo ?= nodeGeo<node<Station>>::new();
+
+    while (fr.available() > 0) {
+        var contractObj = fr.read() as Map;
+
+        var contract = Contract {
+            name: contractObj.get("name") as String,
+            cities: contractObj.get("cities") as Array<String>,
+            commercial_name: contractObj.get("commercial_name") as String,
+            country_code: contractObj.get("country_code") as String,
+            stations: nodeIndex<int, node<Station>>::new(),
+        };
+
+        var contractRef = contracts_by_name .get(contract.name);
+
+        if (contractRef == null) {
+            contractRef = node<Contract>::new(contract);
+            contracts_by_name.set(contract.name, contractRef);
+        }
+
+        for (_, stationObj in contractObj.get("stations") as Array<Map>) {
+            var number = stationObj.get("number") as int;
+
+            //If the station already exists we skip it
+            if (contract.stations.get(number) != null) {
+                continue;
+            }
+
+            var coords = geo::new(stationObj.get("position")!!.get("lat") as float, stationObj.get("position")!!.get("lng") as float);
+
+            var stationDetail = StationDetail {
+                name: stationObj.get("detail")!!.get("name") as String,
+                address: stationObj.get("detail")!!.get("address") as String,
+                banking: stationObj.get("detail")!!.get("banking") as bool,
+                bonus: stationObj.get("detail")!!.get("bonus") as bool,
+            };
+
+            var station = Station {
+                number: stationObj.get("number") as int,
+                position: coords,
+                detail: node<StationDetail>::new(stationDetail),
+                records: nodeTime<StationRecord>::new(),
+                contract: contractRef,
+                profile: node<StationProfile>::new(StationProfile {
+                        hourlyProfile: GaussianProfile::new(24 * 7)
+                    })
+            };
+
+            var stationRef = node<Station>::new(station);
+            contract.stations.set(station.number, stationRef);
+            stations_by_geo.set(coords, stationRef);
+        }
+    }
+}
+
+@write
+fn importRecords() {
+    var fw = FileWalker::new("tmp")!!;
+
+    var file = fw.next();
+
+    while (file != null) {
+        if (file.extension() != "csv") {
+            file = fw.next();
+            continue;
+        }
+
+        var cr = CsvReader::new(file.path, CsvFormat {});
+        var fileName = file.name();
+        var split = fileName.indexOf('_');
+        var stationNumber = fileName.slice(split + 1, fileName.size() - 4);
+        var contractName = fileName.slice(0, split);
+        var contract = contracts_by_name.get(contractName);
+        var stationRef = contract?->stations.get(parseNumber(stationNumber) as int);
+
+        if (stationRef == null) {
+            file = fw.next();
+            continue;
+        }
+
+        while (cr.available() > 0) {
+            var line = cr.read()!!;
+
+            var t = time::new(line[0] as int, DurationUnit::milliseconds);
+            var status = stationStatusImportMapper(line[1] as String);
+            var availableBikes = line[2] as int;
+            var availableBikeStands = line[3] as int;
+            var bikeStands = line[4] as int;
+
+            var record = StationRecord {
+                status: status,
+                available_bikes: availableBikes,
+                available_bike_stands: availableBikeStands,
+                bike_stands: bikeStands,
+            };
+
+            //println("Importing record for ${contractName} ${stationNumber} at ${t}");
+
+            stationRef->records.setAt(t, record);
+            stationRef->profile->updateProfile(t, record);
+        }
+        file = fw.next();
+    }
+}

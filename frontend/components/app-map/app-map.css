@@ -1,0 +1,49 @@
+.maplibregl-popup-content {
+    background-color: var(--bg-0);
+    min-width: 200px;
+
+    h5 {
+        margin-bottom: var(--spacing);
+    }
+
+    p {
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+
+app-map {
+    position: relative;
+
+    .maplibregl-map {
+        height: 100%;
+        width: 100%;
+    }
+
+    #time-slider {
+        position: absolute;
+        background-color: var(--bg-0);
+        top: var(--spacing);
+        left: var(--spacing);
+        padding: var(--spacing);
+        border-radius: var(--border-radius);
+    }
+
+    #time-slider.disabled::after {
+        content: "Zoom in to enable time slider";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--bg-0);
+        color: var(--text-0);
+        border-radius: var(--border-radius);
+        z-index: 1000;
+    }
+}

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreyCat Sign In</title>
+  <style>
+    /* GreyCat UI base CSS with classless definitions */
+    *,
+    ::after,
+    ::before {
+      box-sizing: border-box;
+    }
+
+    /* defaults */
+    :root {
+      font-family: 'Raleway', 'Arial', sans-serif;
+
+      --text-0: 255, 255, 255;
+      --text-1: 215, 215, 215;
+      --text-2: 156, 160, 164;
+      --text-inverse: 0, 0, 0;
+
+      --base-0: 20, 20, 20;
+      --base-1: 40, 40, 40;
+      --base-2: 61, 61, 61;
+
+      --accent-0: 192, 248, 95;
+      --accent-1: 198, 249, 111;
+      --accent-2: 205, 249, 127;
+
+      --neutral-0: 119, 119, 122;
+      --neutral-1: 116, 124, 133;
+      --neutral-2: 132, 138, 147;
+
+      --color-0: #c0f85f;
+      --color-1: #cb9cf8;
+      --color-2: #779ef7;
+      --color-3: #37c43e;
+      --color-4: #5737c4;
+      --color-5: #8c1fab;
+      --color-6: #4fc0e8;
+      --color-7: #f7458e;
+      --color-8: #fe7e6d;
+      --color-9: #ffe35b;
+      --color-10: #fc7db7;
+      --color-11: #2237c4;
+      --color-12: #3b254c;
+
+      --color-error: #f74318;
+
+      --border-radius: 0.3rem;
+      --shadow: 0px 1px 1px 0px rgb(var(--base-1));
+    }
+
+    /* --- classless --- */
+    html,
+    body {
+      color: rgb(var(--text-0));
+      background-color: rgb(var(--base-0));
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    h3 {
+      font-size: 1.6rem;
+    }
+
+    h4 {
+      font-size: 1.4rem;
+    }
+
+    h5 {
+      font-size: 1.2rem;
+    }
+
+    h6 {
+      font-size: 1.1rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0.5rem 0;
+    }
+
+    a:active,
+    a:hover,
+    a:focus {
+      text-decoration: underline;
+    }
+
+    a {
+      color: rgb(var(--accent-0));
+      text-decoration: none;
+    }
+
+    /* Form elements */
+    input,
+    button,
+    select,
+    optgroup,
+    textarea {
+      margin: 0;
+    }
+
+    button,
+    select,
+    input[type='submit'],
+    input[type='button'],
+    input[type='checkbox'],
+    input[type='range'],
+    input[type='radio'] {
+      cursor: pointer;
+      transition: color 0.08s ease-in-out,
+        background-color 0.08s ease-in-out,
+        border-color 0.08s ease-in-out;
+    }
+
+    button,
+    input[type='submit'] {
+      color: rgb(var(--text-inverse));
+      background-color: rgb(var(--accent-0));
+      font-weight: 600;
+      font-family: inherit;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgb(var(--accent-2));
+      border-radius: var(--border-radius);
+      border-color: rgb(var(--accent-0));
+    }
+
+    button:hover,
+    button:focus,
+    input[type='submit']:hover,
+    input[type='submit']:focus {
+      background-color: rgb(var(--accent-0), 0.9);
+    }
+
+    button.inverted:hover,
+    input.inverted[type='submit']:hover {
+      color: rgb(var(--text-inverse));
+      background-color: rgb(var(--accent-0), 0.9);
+    }
+
+    button.inverted:active,
+    input.inverted[type='submit']:active {
+      background-color: rgb(var(--accent-2), 0.9) !important;
+    }
+
+    button:active {
+      box-shadow: none;
+    }
+
+    button:disabled,
+    button[disabled] {
+      box-shadow: none;
+      cursor: initial;
+      opacity: 0.5;
+      background-color: rgb(var(--accent-0));
+    }
+
+    button.inverted {
+      color: rgb(var(--accent-0));
+      background-color: rgb(var(--base-0));
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.2rem;
+    }
+
+    input,
+    textarea {
+      font-size: 1em;
+      background-color: rgb(var(--base-1));
+      border: 1px solid rgb(var(--neutral-0));
+      color: var(--text);
+      margin: 0;
+      margin-bottom: 0.5rem;
+      padding: 0.4em;
+      border-radius: var(--border-radius);
+      max-width: fit-content;
+      outline: none;
+      display: inline-block;
+      appearance: none;
+      transition: border-color 0.15s ease-in-out;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: rgb(var(--accent-0));
+    }
+
+    input[type='checkbox'],
+    input[type='radio'] {
+      margin: 0;
+      margin-right: 0.3rem;
+    }
+
+    input[type='checkbox'] {
+      border-radius: var(--border-radius);
+    }
+
+    input[type='radio'] {
+      border-radius: 100%;
+    }
+
+    input[type='checkbox']:checked,
+    input[type='radio']:checked {
+      color: rgb(var(--base-0));
+      border: 1px solid rgb(var(--accent-0));
+      background-color: rgb(var(--accent-0));
+    }
+
+    input[type='range'] {
+      vertical-align: middle;
+      padding: 0;
+      background: rgb(var(--base-1));
+    }
+
+    /* focus-within */
+    button:focus-within,
+    fieldset:focus-within,
+    input:focus-within,
+    textarea:focus-within,
+    select:focus-within,
+    /* focus-visible */
+    button:focus-visible,
+    fieldset:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    /* hover */
+    button:hover,
+    fieldset:hover,
+    input:hover,
+    textarea:hover,
+    select:hover,
+    /* focus */
+    button:focus,
+    fieldset:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border: 1px solid rgb(var(--accent-1));
+    }
+  </style>
+  <style>
+    /* GreyCat login.html specific CSS */
+    :root {
+      --greycat-logo-height: 100px;
+    }
+
+    html,
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      /* offsets logo's height from the container */
+      margin-top: calc(-1 * var(--greycat-logo-height));
+    }
+
+    #logo {
+      width: auto;
+      height: var(--greycat-logo-height);
+      fill: rgb(var(--text-1));
+      align-self: center;
+    }
+
+    #login {
+      margin: 1rem 0;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      background-color: rgb(18, 18, 18);
+      gap: 0.3rem;
+      border: 1px solid rgb(var(--accent-0), 0.4);
+      border-radius: var(--border-radius);
+    }
+
+    #result {
+      display: none;
+      font-size: 0.9rem;
+      color: var(--color-error);
+      margin-top: 0.5rem;
+    }
+
+    #footer {
+      font-size: 0.8rem;
+      align-self: center;
+      color: rgb(var(--text-1));
+    }
+  </style>
+</head>
+
+<body>
+  <main id="container">
+    <svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 104" title="GreyCat">
+      <path
+        d="M81.07462,79.32769,79.382,75.41936l-.00384-.00629a.42508.42508,0,0,0-.08637-.124l-.008-.0116c-.00946-.009-.02179-.012-.0318-.02a.42515.42515,0,0,0-.08918-.05634.507.507,0,0,0-.2077-.03827c-.00958.00061-.0188-.00214-.02844-.00085l-4.46411.6156-.00446.00134a.42112.42112,0,0,0-.10657.03113l-.01013.003-5.34436,2.452L51.508,71.379l-4.28369-2.54181.35962-4.113c.00079-.00909-.00061-.018-.00043-.0271a.41964.41964,0,0,0-.00079-.05469c-.00122-.012-.00428-.02356-.00653-.0354a.42157.42157,0,0,0-.01081-.04852c-.00415-.01343-.01025-.02606-.01568-.039-.00476-.01117-.00782-.02265-.01355-.03357l-.0047-.00714c-.007-.01264-.01569-.02417-.02393-.03614a.43109.43109,0,0,0-.026-.03607l-.00519-.0072L41.52951,57.7238V46.1798a.42769.42769,0,0,0-.01123-.098L39.08622,35.66051l.88391-9.85126a.42992.42992,0,0,0-.1015-.31811c.328-1.50116,1.476-6.77606,1.476-6.77606l-.00122-.00031c.0025-.01129.00372-.0227.00531-.03424a.4362.4362,0,0,0,.00421-.05554c.00006-.01154-.00055-.023-.00147-.03449a.434.434,0,0,0-.00811-.05615l-.00293-.0199-1.829-7.0155L41.3303,6.30181a.42742.42742,0,0,0,.02148-.11365l.00085-.02362a.42889.42889,0,0,0-.01648-.12634L41.33536,6.032,40.05613,1.88164l-.00727-.0155a.41984.41984,0,0,0-.01916-.05054c-.00464-.00928-.01111-.0169-.0163-.02569l-.01715-.027a.4299.4299,0,0,0-.057-.06641l-.01153-.012a.42494.42494,0,0,0-.08527-.05743l-.02466-.01093a.43188.43188,0,0,0-.07928-.02631l-.01624-.00537-.00915-.00042a.42866.42866,0,0,0-.10291-.00507l-.02533.00415a.42349.42349,0,0,0-.076.01746l-.03412.01294c-.00812.00347-.01654.00531-.02448.00927L36.75553,2.972a.42424.42424,0,0,0-.07184.04523L30.026,8.19542H21.43668L14.77915,3.0172a.42612.42612,0,0,0-.07178-.04523L12.01224,1.62285c-.00812-.00409-.01672-.006-.025-.00952l-.03266-.01245a.42852.42852,0,0,0-.08068-.01855L11.85361,1.579a.4283.4283,0,0,0-.10577.00519l-.00757.00036-.01331.0044a.43133.43133,0,0,0-.08514.02826l-.02008.00891a.42626.42626,0,0,0-.08777.05908l-.00775.00812a.42708.42708,0,0,0-.06012.07019l-.01666.02636c-.00519.00886-.01166.01648-.0163.02576a.4384.4384,0,0,0-.01874.04932l-.00781.01672L10.12717,6.032l-.00079.00611a.43085.43085,0,0,0-.01642.12634l.00085.0238a.42833.42833,0,0,0,.02143.11353l1.819,5.1969L10.122,18.51445l-.003.02088a.43407.43407,0,0,0-.00793.05481c-.00092.01172-.00153.02325-.00147.035a.42447.42447,0,0,0,.00421.05542c.00159.01154.00281.02289.00531.0343l-.00116.00025s1.41437,6.49847,1.552,7.12133l.88134,9.8241L10.11936,46.08178a.43452.43452,0,0,0-.01129.098v11.544L4.16141,64.39928l-.005.007a.4419.4419,0,0,0-.02637.0365.42633.42633,0,0,0-.02387.03619l-.00457.0069c-.00562.01062-.00855.02185-.01319.03271a.41305.41305,0,0,0-.01611.04.4365.4365,0,0,0-.011.0492c-.00207.01147-.00512.02264-.00628.03424a.42268.42268,0,0,0-.00086.05835c.00025.00793-.001.0158-.00036.0238l.00079.00916.00006.00067L5.25821,78.50139,4.074,82.07817l-.00153.01117a.42716.42716,0,0,0-.01947.13794l.00135.01246a.42758.42758,0,0,0,.031.13848l.00092.004.00152.00366,1.0705,2.52961a.43189.43189,0,0,0,.29675.25146l1.956.46924.01844.00213.02215.00544a.45446.45446,0,0,0,.05927.00415l.00085.00006H7.5123l.00116-.00025a.42811.42811,0,0,0,.133-.02429c.01166-.0039.02264-.008.03387-.01294.01087-.00464.0224-.007.0329-.01251l1.809-.95477a.42778.42778,0,0,0,.07684-.0517l2.20227-1.85724,2.866.26441-3.07013,1.839-.00482.004a.42989.42989,0,0,0-.08838.07355l-.01556.01819a.42606.42606,0,0,0-.06421.1001l-1.27942,2.89575a.432.432,0,0,0-.032.11535c-.00183.01337-.00013.02655-.00074.04a.27581.27581,0,0,0,.01252.12311.43377.43377,0,0,0,.02063.06677.4387.4387,0,0,0,.025.045.42.42,0,0,0,.02326.04193l2.5747,3.45849.01239.01313a.42028.42028,0,0,0,.04352.04608l.02454.02154a.4277.4277,0,0,0,.05194.03412c.00946.00543.01849.01148.02838.01618l.01007.00579a.42962.42962,0,0,0,.05652.0185l.02185.0072a.428.428,0,0,0,.09412.011l.0028.0003h4.3429a.42856.42856,0,0,0,.16876-.03454l.00079-.00025c.00892-.00384.01642-.00946.02491-.01379a.41442.41442,0,0,0,.04937-.02722.428.428,0,0,0,.06446-.05414l.00049-.00043h.00006l.00323-.00336,3.72144-3.81646.00482-.007a.42216.42216,0,0,0,.04657-.05994l.01019-.01452c.006-.0102.0108-.02082.016-.03138l.00873-.01989a.43156.43156,0,0,0,.02362-.07294l.00446-.01148.00134-.01446.00378-.02594.00147-.00543.58508-6.57514,3.62775-2.59149L29.44,81.19658l.58587,6.58393.00141.00543.00384.02594.00134.01446.00446.01148a.43133.43133,0,0,0,.02356.07294l.00879.01989c.00513.01056.00989.02118.01593.03138l.01019.01452a.43109.43109,0,0,0,.04657.05994l.00488.007L33.86826,91.86l.0033.00336h.00006l.00048.00043a.425.425,0,0,0,.06446.05414.41838.41838,0,0,0,.04931.02722c.00855.00433.016.01.025.01379l.00073.00025a.44378.44378,0,0,0,.16882.03454h4.34272l.003-.00036a.428.428,0,0,0,.09381-.011l.0216-.00708a.42926.42926,0,0,0,.05689-.01862l.01019-.00579c.00971-.0047.01856-.01062.0279-.016a.4332.4332,0,0,0,.05236-.03436l.02436-.02142a.41579.41579,0,0,0,.04358-.04614l.01245-.01313,2.57483-3.45849a.4249.4249,0,0,0,.02368-.04267.4196.4196,0,0,0,.02447-.04394.43477.43477,0,0,0,.02112-.0683.27682.27682,0,0,0,.01221-.12366c-.00067-.01275.001-.02527-.00073-.038a.42927.42927,0,0,0-.03217-.1156l-1.27954-2.89575a.42653.42653,0,0,0-.06354-.09925l-.017-.01971a.43051.43051,0,0,0-.08746-.07263l-.00513-.00421-3.06994-1.839,2.866-.26441,2.20258,1.85724a.42511.42511,0,0,0,.07672.0517l1.80914.95477.00562.00214a.4281.4281,0,0,0,.09045.03448l.01325.00214a.42486.42486,0,0,0,.0816.01l.01056.00128c.00763,0,.01508-.00226.02271-.00269.01251-.00067.02478.00031.03741-.00152l.02228-.00544.01819-.00213,1.95587-.46924a.43294.43294,0,0,0,.297-.25146l.93969-2.22034,17.7956,2.9469c.01519.00256.03064.00421.04608.00537l10.6214.60211.02411.00055h.0003a.42909.42909,0,0,0,.1098-.01538l.00849-.00116a.42863.42863,0,0,0,.05151-.02051c.00848-.00366.0174-.006.02563-.01019a.42808.42808,0,0,0,.07728-.05011l.01483-.01459a.42969.42969,0,0,0,.04944-.05157l.0075-.00788,4.7721-6.31939A.43178.43178,0,0,0,81.07462,79.32769Zm-6.13507-2.74433,2.8789-.39709-2.97821,3.11682Zm-5.501,2.42884,4.6261-2.12244L73.94858,80.072l-4.53149.98431Zm-.8634.01446-.0213,2.0282L53.46836,77.66381l-1.493-5.17316ZM47.1409,69.79143l3.80933,2.26032,1.5271,5.29144-5.81751-2.04944Zm-.67651-5.23022-7.15613,3.75927L41.342,58.81115Zm-12.078,2.99609-1.047-12.71051,7.26379,3.29126L38.36606,68.599Zm3.79388,1.88538-2.9425,12.95959-1.28986.68884L34.39615,68.452ZM35.42362,86.318l-3.9198.77661,2.034-2.6242ZM33.5264,67.63189l-4.38464,2.0227-2.82752-7.6582,6.18622-6.81915Zm7.13995-21.40247V57.219l-7.607-3.44671-6.57892-4.39594,11.93329-12.799ZM27.97379,32.41491a.4317.4317,0,0,0,.4021.04119l1.916-.77752-.99872,1.2102-3.56176.89771-3.56177-.89771-.99884-1.21026,1.91608.77758a.4317.4317,0,0,0,.4021-.04119l2.24243-1.49915Zm-1.58948-2.10083,1.823-1.88379,2.65277,2.08612-2.59674,1.05377Zm-3.18494,1.2561-2.59661-1.05377,2.65265-2.08606,1.823,1.88373ZM21.594,33.54741a.431.431,0,0,0,.22729.14386l3.729.93976a.42453.42453,0,0,0,.164.03644l.017-.00208.017.00208a.42461.42461,0,0,0,.164-.03644l3.729-.93976a.43106.43106,0,0,0,.2273-.14386l2.1264-2.57672c4.24213-2.47809,6.16089-3.71417,7.03632-4.359l-.798,8.89337L25.81876,48.8203,13.404,35.50505l-.78571-8.75817c.951.67761,2.8855,1.90826,6.8493,4.22381Zm17.36883-7.95495c-.52282.51294-4.40454,2.87628-7.21588,4.52337l-2.33191-1.83392h2.09339a.4316.4316,0,0,0,.20343-.051l6.64038-3.54969a.43123.43123,0,0,0,.18432-.191l1.20362-2.46338C39.40042,23.58727,39.05545,25.1704,38.96286,25.59246Zm-1.1405-1.60663-6.42206,3.433H28.72586l1.07544-4.14929,2.95508-.57275a.43171.43171,0,0,0,.28729-.20081l1.85541-3.07562,5.31116-.32154Zm-7.78107-1.64209.30469-1.17542,1.55554-1.56652,1.95136-.11811-1.4491,2.40216Zm10.33149-4.11957-5.74677.348-.00305.00019-2.93793.17785a.43139.43139,0,0,0-.28009.12659l-.62927.63373,2.06744-7.97632L38.722,11.892Zm-1.6117-7.19446-4.804-.29242,6.17053-3.61242Zm.71283-8.10638.93591,3.03625L34.25864,9.56066Zm-25.1911.80133,6.74084,5.243a.43164.43164,0,0,0,.265.09094h8.8855a.43161.43161,0,0,0,.265-.09094l6.741-5.243.93359-.46729-5.93854,7.5578-.00055.001a.43175.43175,0,0,0-.06213.11475l-.002.00531-.00739.01947-.00549.01556-.00086.00232L27.77884,27.63189l-2.04742,2.11572-2.04736-2.11572-4.318-16.65833-.00061-.00165-.00586-.017-.00641-.017a.4293.4293,0,0,0-.06537-.12238l-.00018-.00031L13.349,3.25725Zm7.13873,18.61908-2.36261-.45789-1.44909-2.40216,1.95135.11811,1.55567,1.56665ZM11.9888,2.92333l5.21527,6.63733L11.05289,5.95958Zm-.65387,4.20154,6.1706,3.61242-4.8039.29242ZM12.74082,11.892l5.87878-.35779,2.06757,7.97644-.6294-.63385a.43134.43134,0,0,0-.28009-.12659l-2.93811-.17785-.003-.00019-5.74689-.348ZM11.25235,19.0988l5.31128.32154L18.419,22.496a.43171.43171,0,0,0,.28729.20081l2.95514.57275,1.0755,4.14929H20.06241l-6.42206-3.433ZM12.5,25.59246c-.09277-.42218-.43774-2.00525-.77764-3.56568l1.20373,2.46344a.4303.4303,0,0,0,.18433.191L19.75083,28.231a.43157.43157,0,0,0,.20343.051h2.0935l-2.332,1.83392C16.90421,28.46874,13.02237,26.10521,12.5,25.59246Zm-1.5288,20.63708,2.2525-9.652L25.157,49.37633l-6.57886,4.39594L10.97123,57.219Zm6.28,21.32776L13.2714,68.599,11.03434,58.13805l7.26373-3.29126Zm.84852,16.91315,2.034,2.6242L16.214,86.318Zm-.4101-1.37934-1.28986-.68884L13.45713,69.44268l3.7843-.99066ZM19.137,55.17724l6.18622,6.81915-2.8274,7.6582-4.38458-2.0227Zm-8.84137,3.63391,2.03357,9.50927L5.17337,64.56121ZM5.9058,79.29174l1.44091,1.20831-2.15008.93365Zm1.24481,5.3941-1.28229-.30762-.8205-1.93872L7.6243,81.32067Zm1.92755-.78418-1.02142.539.44763-3.18,2.36706,1.1286Zm2.21326-2.26825-2.8971-1.38128L6.11026,78.33666,4.98246,65.436l7.50366,3.94184Zm.84143.26435.98138-10.06727L15.47,82.20562Zm3.902,1.2882,1.38677.74054-2.19677,2.15229-2.43018-.95209Zm-4.659,4.09284.67084-1.51813L14.036,86.54l-2.71466.8623Zm1.64392,3.43353-1.77234-2.38074,3.29572-1.04712Zm.75861.41827,1.54144-3.46838,1.48321,3.46838Zm3.82122-.33282L16.046,87.16484l4.271.8462Zm3.24976-4.18884-2.27832-2.93933-.462-15.08814,4.1731,1.92529ZM25.317,77.91558l-3.01941,2.15686.86621-9.73474,2.21265-5.99323Zm.50177-16.65753L19.44443,54.2315l6.37433-4.25928,6.37433,4.25928Zm.49451,16.644a.40968.40968,0,0,0-.13221-.20014L26.23984,64.287l2.234,6.05066.86542,9.72595Zm3.9768,3.108c.00122-.01343.00611-.02661.00611-.04a.4292.4292,0,0,0-.02088-.12555l-.91986-10.33771,4.17316-1.92529-.4621,15.08814-2.27826,2.93933Zm3.74787,9.78772L31.32065,88.011l4.271-.8462Zm.79663.33282,1.48315-3.46838L37.859,91.1306Zm3.7832-.41839-1.52331-3.42774,3.29565,1.04712Zm1.69849-3.30988-2.7146-.8623,1.98907-.77942ZM38.84287,85.1267l-2.43018.95209L34.21592,83.9265l1.38684-.74054Zm-2.67529-2.92108,2.35565-10.37525.98138,10.06739Zm6.392,1.696L40.766,82.38927l2.36731-1.12866.4477,3.18Zm.68384-3.64953L40.346,81.63341l-1.1947-12.25555,7.504-3.9419-1.12793,12.9007Zm2.48841-.96039.70929,2.14215-2.15027-.93378Zm.03759,5.08648-1.28228.30762-.47382-3.36517,2.5766,1.11883Zm1.61194-2.85083-1.002-3.026.20282-2.31976,5.60742,1.97528Zm17.75806,3.2273L48.26712,81.96087,53.216,78.49181l14.8952,3.34833Zm1.14545.086,2.9082-2.85242,4.87048-1.058,1.26166,4.423Zm9.79919.02661-1.23389-4.3252,3.99793-4.18383,1.33471,3.08154ZM6.93686,100.56707h3.46723v3.32336a5.37412,5.37412,0,0,1-9.29389-3.683,5.35409,5.35409,0,0,1,5.33753-5.38068,5.26659,5.26659,0,0,1,3.28021,1.09357v1.49615a4.18434,4.18434,0,0,0-3.28021-1.55377,4.34713,4.34713,0,0,0,.04309,8.6897,4.20978,4.20978,0,0,0,2.77673-1.06464v-1.89911h-2.676Zm14.77429-2.61841c0-2.345-1.72625-2.87714-3.683-2.87714H14.99271V105.358h1.13654v-4.5318h2.14349l3.13641,4.69.86316-.70495-2.80542-4.11463A2.52779,2.52779,0,0,0,21.71115,97.94866Zm-3.683,1.85614H16.12925V96.09288h1.89892c1.39563,0,2.53217.4029,2.53217,1.85578C20.56034,99.38756,19.4238,99.8048,18.02817,99.8048Zm9.52319-3.75495v3.6684h4.27289l-.34527,1.00732H27.55136v3.611h5.17933l-.34534,1.02136H26.42929V95.02825h6.3014l-.34534,1.0216ZM43.20359,94.942l1.12219.34527-3.64,5.43829V105.358H39.54923v-4.63239l-3.63989-5.43829,1.12225-.34527,3.09308,4.66131Zm13.37884.89209V97.287a4.15614,4.15614,0,0,0-3.12189-1.42426,4.34641,4.34641,0,0,0,0,8.6897,4.14761,4.14761,0,0,0,3.10755-1.40991v1.45288a5.46575,5.46575,0,0,1-3.10755.99267,5.38065,5.38065,0,1,1,0-10.76129A5.47322,5.47322,0,0,1,56.58243,95.8341Zm3.72516,9.52386h1.12219l.964-2.28741h4.63245l.964,2.28741h1.12195L64.70987,94.91332Zm2.51776-3.309,1.88452-4.48859,1.89911,4.48859Zm10.06958-6.97742h7.82654l-.34534,1.02136h-3.1795V105.358H76.07444V96.09288H72.54959Z"
+        transform="translate(-1.1102 -1.57772)" />
+    </svg>
+    <div id="login">
+      <label for="username">
+        <input id="username" type="text" name="username" placeholder="Username" required="required"
+          autocomplete="username" />
+      </label>
+      <label for="password">
+        <input id="password" type="password" name="password" placeholder="Password" required="required"
+          autocomplete="current-password" />
+      </label>
+      <button id="submit">Sign in</button>
+      <button id="oid">
+        OpenID Sign-in
+      </button>
+      <div id="result"></div>
+    </div>
+    <div id="footer">by DataThings</div>
+  </main>
+</body>
+
+<script type="module">
+  /** @type {HTMLDivElement} */
+  const resultEl = document.getElementById('result');
+  /** @type {HTMLInputElement} */
+  const usernameEl = document.getElementById('username');
+  /** @type {HTMLInputElement} */
+  const passwordEl = document.getElementById('password');
+  /** @type {HTMLButtonElement} */
+  const submitEl = document.getElementById('submit');
+  /** @type {HTMLButtonElement} */
+  const oidEl = document.getElementById('oid');
+
+  function resetErrHandler() {
+    resultEl.style.display = 'none';
+    resultEl.textContent = '';
+  }
+
+  function resultText(txt) {
+    resultEl.style.display = 'block';
+    resultEl.textContent = txt;
+  }
+
+  /**
+   *
+   * @param {KeyboardEvent} e
+   */
+  function keypressHandler(e) {
+    resetErrHandler();
+    // if 'Enter' pressed, try to log in
+    if (e.key === 'Enter') {
+      auth();
+    }
+  }
+
+  /**
+   * This function basically does: `hex(sha256(data))`
+   *
+   * Generates SHA-256 hash of string
+   *
+   * @param {string} data               string to be hashed
+   * @param {boolean} utf8encode encode data as UTF-8 before generating hash (defaults to `true`)
+   * @returns {string}                  hash of data as hex character string
+   */
+  function sha256hex(data, utf8encode = true) {
+    const c = {};
+    c.hash = function (a, f) {
+      ('undefined' == typeof f || f) && (a = t(a));
+      for (
+        var h = [
+          1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748,
+          2870763221, 3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206,
+          2614888103, 3248222580, 3835390401, 4022224774, 264347078, 604807628, 770255983,
+          1249150122, 1555081692, 1996064986, 2554220882, 2821834349, 2952996808, 3210313671,
+          3336571891, 3584528711, 113926993, 338241895, 666307205, 773529912, 1294757372,
+          1396182291, 1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411,
+          3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344, 430227734,
+          506948616, 659060556, 883997877, 958139571, 1322822218, 1537002063, 1747873779,
+          1955562222, 2024104815, 2227730452, 2361852424, 2428436474, 2756734187, 3204031479,
+          3329325298,
+        ],
+        b = [
+          1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924, 528734635,
+          1541459225,
+        ],
+        a = a + String.fromCharCode(128),
+        i = Math.ceil((a.length / 4 + 2) / 16),
+        j = Array(i),
+        g = 0;
+        g < i;
+        g++
+      ) {
+        j[g] = Array(16);
+        for (var e = 0; 16 > e; e++)
+          j[g][e] =
+            (a.charCodeAt(64 * g + 4 * e) << 24) |
+            (a.charCodeAt(64 * g + 4 * e + 1) << 16) |
+            (a.charCodeAt(64 * g + 4 * e + 2) << 8) |
+            a.charCodeAt(64 * g + 4 * e + 3);
+      }
+      j[i - 1][14] = (8 * (a.length - 1)) / Math.pow(2, 32);
+      j[i - 1][14] = Math.floor(j[i - 1][14]);
+      j[i - 1][15] = (8 * (a.length - 1)) & 4294967295;
+      for (var e = Array(64), k, m, n, q, l, o, p, r, g = 0; g < i; g++) {
+        for (var d = 0; 16 > d; d++) e[d] = j[g][d];
+        for (d = 16; 64 > d; d++)
+          e[d] = (c.h(e[d - 2]) + e[d - 7] + c.g(e[d - 15]) + e[d - 16]) & 4294967295;
+        k = b[0];
+        m = b[1];
+        n = b[2];
+        q = b[3];
+        l = b[4];
+        o = b[5];
+        p = b[6];
+        r = b[7];
+        for (d = 0; 64 > d; d++) {
+          var s = r + c.f(l) + c.c(l, o, p) + h[d] + e[d],
+            u = c.e(k) + c.d(k, m, n);
+          r = p;
+          p = o;
+          o = l;
+          l = (q + s) & 4294967295;
+          q = n;
+          n = m;
+          m = k;
+          k = (s + u) & 4294967295;
+        }
+        b[0] = (b[0] + k) & 4294967295;
+        b[1] = (b[1] + m) & 4294967295;
+        b[2] = (b[2] + n) & 4294967295;
+        b[3] = (b[3] + q) & 4294967295;
+        b[4] = (b[4] + l) & 4294967295;
+        b[5] = (b[5] + o) & 4294967295;
+        b[6] = (b[6] + p) & 4294967295;
+        b[7] = (b[7] + r) & 4294967295;
+      }
+      return (
+        c.b(b[0]) + c.b(b[1]) + c.b(b[2]) + c.b(b[3]) + c.b(b[4]) + c.b(b[5]) + c.b(b[6]) + c.b(b[7])
+      );
+    };
+    c.a = function (a, f) {
+      return (f >>> a) | (f << (32 - a));
+    };
+    c.e = function (a) {
+      return c.a(2, a) ^ c.a(13, a) ^ c.a(22, a);
+    };
+    c.f = function (a) {
+      return c.a(6, a) ^ c.a(11, a) ^ c.a(25, a);
+    };
+    c.g = function (a) {
+      return c.a(7, a) ^ c.a(18, a) ^ (a >>> 3);
+    };
+    c.h = function (a) {
+      return c.a(17, a) ^ c.a(19, a) ^ (a >>> 10);
+    };
+    c.c = function (a, f, h) {
+      return (a & f) ^ (~a & h);
+    };
+    c.d = function (a, f, h) {
+      return (a & f) ^ (a & h) ^ (f & h);
+    };
+    c.b = function (a) {
+      for (var f = '', h, b = 7; 0 <= b; b--) (h = (a >>> (4 * b)) & 15), (f += h.toString(16));
+      return f;
+    };
+
+    function t(a) {
+      a = a.replace(/[\u0080-\u07ff]/g, function (a) {
+        a = a.charCodeAt(0);
+        return String.fromCharCode(192 | (a >> 6), 128 | (a & 63));
+      });
+      return (a = a.replace(/[\u0800-\uffff]/g, function (a) {
+        a = a.charCodeAt(0);
+        return String.fromCharCode(224 | (a >> 12), 128 | ((a >> 6) & 63), 128 | (a & 63));
+      }));
+    }
+
+    return c.hash(data, utf8encode);
+  }
+
+  // detect prefix
+  let prefix = ".";
+  for (let i = 0; i < 4; i++) {
+    const response = await fetch(`${prefix}/runtime::User::me`, { method: 'POST' });
+    if (response.status === 401) {
+      break;
+    }
+    prefix += '/..';
+  }
+
+  async function auth() {
+    try {
+      const credentials = btoa(`${usernameEl.value}:${sha256hex(passwordEl.value)}`);
+      const res = await fetch(`${prefix}/runtime::User::login`, {
+        method: 'POST',
+        body: JSON.stringify([credentials, true])
+      });
+      if (res.ok) {
+        const url = new URL(window.location.href.toString());
+        url.hash = '';
+        window.location.replace(url.toString()?.replace("login.html", ""));
+      } else {
+        resultText('Login rejected');
+      }
+    } catch (err) {
+      console.error(err);
+      resultText('Login failed');
+    }
+  }
+
+  async function start_open_id() {
+    const urlParams = new URLSearchParams(window.location.hash.replace("#", "?"));
+    if (urlParams.has("id_token")) {
+      const response = await fetch(`${prefix}/runtime::User::tokenLogin`, {
+        method: 'POST',
+        body: JSON.stringify([urlParams.get("id_token"), true])
+      });
+      if (response.ok) {
+        const url = new URL(window.location.href.toString());
+        url.hash = '';
+        window.location.replace(url.toString()?.replace("login.html", ""));
+      } else {
+        resultText('Login rejected');
+      }
+    } else {
+      const response = await fetch(`${prefix}/runtime::OpenIDConnect::config`, { method: 'POST' });
+      if (response.ok) {
+        const open_id_config = await response.json();
+        if (open_id_config != null && open_id_config.url !== null) {
+          const response_oid_infos = await fetch(open_id_config.url);
+          if (response_oid_infos.ok) {
+            const oid_infos = await response_oid_infos.json();
+            if (oid_infos != null && oid_infos.authorization_endpoint !== null) {
+              const href = window.location.href.toString();
+              window.location.replace(oid_infos.authorization_endpoint + "?client_id=" + open_id_config.clientId +
+                "&response_type=id_token&redirect_uri=" + encodeURI(href) +
+                "&scope=openid&response_mode=fragment&state=12345&nonce=678910"
+              );
+            }
+          }
+        }
+      }
+    }
+    oidEl.disabled = true;
+    oidEl.style.display = "none";
+  }
+
+  start_open_id();
+  usernameEl.addEventListener('keypress', keypressHandler);
+  usernameEl.addEventListener('focus', resetErrHandler);
+  passwordEl.addEventListener('keypress', keypressHandler);
+  passwordEl.addEventListener('focus', resetErrHandler);
+  submitEl.addEventListener('click', auth);
+  submitEl.addEventListener('focus', resetErrHandler);
+  oidEl.addEventListener('click', auth);
+  oidEl.addEventListener('focus', resetErrHandler);
+</script>
+
+</html>
