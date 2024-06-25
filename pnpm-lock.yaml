@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@greycat/web':
-    specifier: https://get.greycat.io/files/sdk/web/testing/6.10/6.10.48-testing.tgz
-    version: '@get.greycat.io/files/sdk/web/testing/6.10/6.10.48-testing.tgz'
+    specifier: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz
+    version: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz(@types/react@18.3.1)'
   '@shoelace-style/shoelace':
     specifier: 2.15.0
     version: 2.15.0(@types/react@18.3.1)
@@ -570,6 +570,22 @@ packages:
 
   /@shoelace-style/shoelace@2.15.0(@types/react@18.3.1):
     resolution: {integrity: sha512-Lcg938Y8U2VsHqIYewzlt+H1rbrXC4GRSUkTJgXyF8/0YAOlI+srd5OSfIw+/LYmwLP2Peyh398Kae/6tg4PDA==}
+    engines: {node: '>=14.17.0'}
+    dependencies:
+      '@ctrl/tinycolor': 4.1.0
+      '@floating-ui/dom': 1.6.5
+      '@lit/react': 1.0.5(@types/react@18.3.1)
+      '@shoelace-style/animations': 1.1.0
+      '@shoelace-style/localize': 3.1.2
+      composed-offset-position: 0.0.4
+      lit: 3.1.3
+      qr-creator: 1.0.0
+    transitivePeerDependencies:
+      - '@types/react'
+    dev: false
+
+  /@shoelace-style/shoelace@2.15.1(@types/react@18.3.1):
+    resolution: {integrity: sha512-3ecUw8gRwOtcZQ8kWWkjk4FTfObYQ/XIl3aRhxprESoOYV1cYhloYPsmQY38UoL3+pwJiZb5+LzX0l3u3Zl0GA==}
     engines: {node: '>=14.17.0'}
     dependencies:
       '@ctrl/tinycolor': 4.1.0
@@ -2348,22 +2364,26 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  '@get.greycat.io/files/sdk/js/testing/6.10/6.10.12-testing.tgz':
-    resolution: {tarball: https://get.greycat.io/files/sdk/js/testing/6.10/6.10.12-testing.tgz}
+  '@get.greycat.io/files/sdk/js/dev/7.0/7.0.48-dev.tgz':
+    resolution: {tarball: https://get.greycat.io/files/sdk/js/dev/7.0/7.0.48-dev.tgz}
     name: '@greycat/sdk'
-    version: 6.10.12-testing
+    version: 7.0.48-dev
     engines: {node: '>=18'}
     dependencies:
       slugify: 1.6.6
     dev: false
 
-  '@get.greycat.io/files/sdk/web/testing/6.10/6.10.48-testing.tgz':
-    resolution: {tarball: https://get.greycat.io/files/sdk/web/testing/6.10/6.10.48-testing.tgz}
+  '@get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz(@types/react@18.3.1)':
+    resolution: {tarball: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz}
+    id: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz'
     name: '@greycat/web'
-    version: 6.10.48-testing
-    engines: {node: '>=16.13.0'}
+    version: 7.0.110-dev
+    engines: {node: '>=20'}
     dependencies:
-      '@greycat/sdk': '@get.greycat.io/files/sdk/js/testing/6.10/6.10.12-testing.tgz'
+      '@greycat/sdk': '@get.greycat.io/files/sdk/js/dev/7.0/7.0.48-dev.tgz'
+      '@shoelace-style/shoelace': 2.15.1(@types/react@18.3.1)
       d3: 7.8.5
       dockview-core: 1.10.1
+    transitivePeerDependencies:
+      - '@types/react'
     dev: false
