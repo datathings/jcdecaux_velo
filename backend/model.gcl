@@ -47,10 +47,9 @@ type StationProfile {
     fn updateProfile(t: time, data: StationRecord) {
         if (data.bike_stands > 0) {
             //convert the time to the correct slot
-            var quantizer = Quantizer::new();
-            quantizer.configure([DenseDim { min: 0, max: 6, step: 1 }, DenseDim { min: 0, max: 23, step: 1 }]);
-            var date = t.toDateUTC();
-            var slot = quantizer.quantize([date.dayOfWeek(), date.hours()]);
+            var quantizer = Quantizer { dimensions: [QuantizerDenseDim { min: 0, max: 6, step: 1 }, QuantizerDenseDim { min: 0, max: 23, step: 1 }] };
+            var date = t.toDate(null);
+            var slot = quantizer.quantize([t.dayOfWeek(null), date.hour]);
 
             this.hourlyProfile.add(slot, data.available_bikes as float / data.bike_stands as float);
         }

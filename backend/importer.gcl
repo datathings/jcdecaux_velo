@@ -7,7 +7,7 @@ var jcdeaux_key: String?;
 
 fn getKey(): String {
     if (jcdeaux_key == null) {
-        var tr = TextReader::new("api_key.txt");
+        var tr = TextReader { path: "api_key.txt" };
         jcdeaux_key = tr.readLine();
     }
 
@@ -16,7 +16,7 @@ fn getKey(): String {
 
 
 @write
-task importContracts() {
+fn importContracts() {
     var apiKey = jcdeaux_key ?? getKey();
 
     var headers = [HttpHeader { name: "accept", value: "application/json" }];
@@ -53,7 +53,7 @@ task importContracts() {
 }
 
 @write
-task importStations() {
+fn importStations() {
     var apiKey = jcdeaux_key ?? getKey();
 
     var headers = [HttpHeader { name: "accept", value: "application/json" }];
@@ -162,7 +162,7 @@ fn stationStatusExportMapper(status: StationStatus): String {
 fn exportRecords() {
     for (_, contract in contracts_by_name) {
         for (number, station in contract->stations) {
-            var cr = CsvWriter::new("tmp/${contract->name}_${number}.csv", CsvFormat {});
+            var cr = CsvWriter { path: "tmp/${contract->name}_${number}.csv", format: CsvFormat {} };
 
             for (key, data in station->records) {
                 var line = [
@@ -182,7 +182,7 @@ fn exportRecords() {
 
 //export to a generic format
 fn exportData() {
-    var fw = JsonWriter::new("tmp/data.ndjson");
+    var fw = JsonWriter { path: "tmp/data.ndjson" };
 
     for (_, contractRef in contracts_by_name) {
         var contract = contractRef.resolve();
@@ -211,7 +211,7 @@ fn exportData() {
 
 @write
 fn importData() {
-    var fr = JsonReader::new("tmp/data.ndjson").ignore_types();
+    var fr = JsonReader { path: "tmp/data.ndjson", ignore_types: true };
 
     contracts_by_name ?= nodeIndex<String, node<Contract>>::new();
     stations_by_geo ?= nodeGeo<node<Station>>::new();
@@ -271,7 +271,7 @@ fn importData() {
 
 @write
 fn importRecords() {
-    var fw = FileWalker::new("tmp")!!;
+    var fw = FileWalker { path: "tmp" };
 
     var file = fw.next();
 
@@ -281,7 +281,7 @@ fn importRecords() {
             continue;
         }
 
-        var cr = CsvReader::new(file.path, CsvFormat {});
+        var cr = CsvReader { path: file.path, format: CsvFormat {} };
         var fileName = file.name();
         var split = fileName.indexOf('_');
         var stationNumber = fileName.slice(split + 1, fileName.size() - 4);
