@@ -1,12 +1,10 @@
 import { logout } from '@greycat/web';
-import LogoutIcon from '@tabler/icons/outline/logout.svg?raw';
-import BrightnessUpIcon from '@tabler/icons/outline/brightness-up.svg?raw';
-import MoonIcon from '@tabler/icons/outline/moon.svg?raw';
-import HomeIcon from '@tabler/icons/outline/home.svg?raw';
+
 import LogoIcon from './logo.svg?raw';
 import { icon } from '../../common/utils';
 import { APP_LAYOUT_THEME } from '../../common/constants';
 import './app-layout.css';
+import '../../common/icons';
 
 /**
  * Make sure to append this component to the DOM **after** GreyCat is initialized
@@ -71,42 +69,40 @@ export class AppLayout extends HTMLElement {
   }
 
   private _pageNavItems(placement: 'right' | 'bottom'): HTMLLIElement[] {
-    const items = [this._createNavItem('Index', '.', icon(HomeIcon), this.parent, placement)];
+    const items = [this._createNavItem('Index', '.', 'house', this.parent, placement)];
 
     return items;
   }
 
   private _extraNavItems(): HTMLLIElement[] {
-    const lightIcon = icon(BrightnessUpIcon);
-    const darkIcon = icon(MoonIcon);
     const initialTheme = getCurrentTheme();
 
     const themeIcon = {
-      dark: lightIcon,
-      light: darkIcon,
+      dark: 'sun',
+      light: 'moon',
     };
 
     function toggleTheme() {
       const curTheme = getCurrentTheme();
       const newTheme = curTheme === 'dark' ? 'light' : 'dark';
-      toggleThemeBtn.replaceChildren(themeIcon[newTheme]);
+      toggleThemeBtn.name = themeIcon[newTheme];
       setCurrentTheme(newTheme);
       // remove focus after update
       toggleThemeBtn.blur();
     }
 
     const toggleThemeBtn = (
-      <button role="link" onclick={toggleTheme}>
-        {initialTheme === 'dark' ? lightIcon : darkIcon}
-      </button>
-    ) as HTMLButtonElement;
+      <sl-icon-button
+        role="link"
+        onclick={toggleTheme}
+        name={themeIcon[initialTheme]}
+      ></sl-icon-button>
+    ) as SlIconButton;
 
     return [
       <li>{toggleThemeBtn}</li>,
       <li>
-        <button role="link" onclick={this.signout}>
-          {icon(LogoutIcon)}
-        </button>
+        <sl-icon-button role={'link'} name="logout" onclick={this.signout}></sl-icon-button>
       </li>,
     ] as HTMLLIElement[];
   }
@@ -114,20 +110,19 @@ export class AppLayout extends HTMLElement {
   private _createNavItem(
     label: string,
     route: string,
-    icon: SVGSVGElement,
+    icon: string,
     href = `${this.parent}/${route}/`,
     placement: 'right' | 'bottom',
   ): HTMLLIElement {
     return (
       <li>
-        <a
+        <sl-icon-button
           className={this.current === route ? 'active' : undefined}
           href={href}
           data-tooltip={label}
           data-placement={placement}
-        >
-          {icon}
-        </a>
+          name={icon}
+        ></sl-icon-button>
       </li>
     ) as HTMLLIElement;
   }

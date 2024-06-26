@@ -1,17 +1,26 @@
-import MailIcon from '@tabler/icons/outline/mail.svg';
-import PhoneIcon from '@tabler/icons/outline/phone.svg';
-import MessageIcons from '@tabler/icons/outline/message.svg';
-import CheckIcon from '@tabler/icons/outline/check.svg';
-import HeartIcon from '@tabler/icons/outline/heart.svg';
-import GiftIcon from '@tabler/icons/outline/gift.svg';
 import HouseIcon from '@tabler/icons/outline/home.svg';
+import Logout from '@tabler/icons/outline/logout.svg';
+import Sun from '@tabler/icons/outline/sun.svg';
+import Moon from '@tabler/icons/outline/moon.svg';
+import { sl } from '@greycat/web';
 
-export const ICONS: Record<string, string | undefined> = {
-  mail: MailIcon,
-  phone: PhoneIcon,
-  message: MessageIcons,
-  check: CheckIcon,
-  heart: HeartIcon,
-  gift: GiftIcon,
+// Those icons will be available in any shoelace component
+// by using the "tabler" library:
+//
+// eg.
+//  <sl-icon library="tabler" name="heart" />
+//
+// add/del icons fitting your needs
+// the full list is available at https://tabler.io/icons
+const ICONS: Record<string, string | undefined> = {
   house: HouseIcon,
+  logout: Logout,
+  sun: Sun,
+  moon: Moon,
 };
+
+sl.registerIconLibrary('default', {
+  resolver: (name) => {
+    return ICONS[name] ?? '';
+  },
+});

@@ -8,9 +8,6 @@ dependencies:
   '@greycat/web':
     specifier: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz
     version: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz(@types/react@18.3.1)'
-  '@shoelace-style/shoelace':
-    specifier: 2.15.0
-    version: 2.15.0(@types/react@18.3.1)
   '@tabler/icons':
     specifier: 3.3.0
     version: 3.3.0
@@ -566,22 +563,6 @@ packages:
 
   /@shoelace-style/localize@3.1.2:
     resolution: {integrity: sha512-Hf45HeO+vdQblabpyZOTxJ4ZeZsmIUYXXPmoYrrR4OJ5OKxL+bhMz5mK8JXgl7HsoEowfz7+e248UGi861de9Q==}
-    dev: false
-
-  /@shoelace-style/shoelace@2.15.0(@types/react@18.3.1):
-    resolution: {integrity: sha512-Lcg938Y8U2VsHqIYewzlt+H1rbrXC4GRSUkTJgXyF8/0YAOlI+srd5OSfIw+/LYmwLP2Peyh398Kae/6tg4PDA==}
-    engines: {node: '>=14.17.0'}
-    dependencies:
-      '@ctrl/tinycolor': 4.1.0
-      '@floating-ui/dom': 1.6.5
-      '@lit/react': 1.0.5(@types/react@18.3.1)
-      '@shoelace-style/animations': 1.1.0
-      '@shoelace-style/localize': 3.1.2
-      composed-offset-position: 0.0.4
-      lit: 3.1.3
-      qr-creator: 1.0.0
-    transitivePeerDependencies:
-      - '@types/react'
     dev: false
 
   /@shoelace-style/shoelace@2.15.1(@types/react@18.3.1):

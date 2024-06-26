@@ -204,7 +204,7 @@ export class AppMap extends HTMLElement {
             max={end.toString()}
             value={start.toString()}
           />
-          <button
+          <sl-button
             style={{ width: '50px' }}
             onclick={(e) => {
               if (this.interval) {
@@ -230,7 +230,7 @@ export class AppMap extends HTMLElement {
             }}
           >
             ⏵
-          </button>
+          </sl-button>
         </div>
       );
 
