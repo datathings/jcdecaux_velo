@@ -9,7 +9,7 @@ export class AppMap extends HTMLElement {
   map!: maplibregl.Map;
   interval?: number;
 
-  selectedTime = Date.parse('2024-05-15T13:16:53.000Z');
+  selectedTime = Date.parse('2024-05-15T14:16:53.000Z');
 
   stationsMap: Map<number, api.StationDTO> = new Map();
 
@@ -40,7 +40,7 @@ export class AppMap extends HTMLElement {
           clusterMaxZoom: 9,
           clusterRadius: 40,
         });
-        await this.fetchGeoJson();
+        await this.fetchGeoJson(core.time.fromMs(this.selectedTime));
 
         this.map.addLayer({
           id: 'stations',
@@ -170,7 +170,7 @@ export class AppMap extends HTMLElement {
         this.fetchGeoJson(core.time.fromMs(this.selectedTime));
       });
 
-      const start = Date.parse('2024-05-15T13:16:53.000Z');
+      const start = Date.parse('2024-05-15T14:16:53.000Z');
 
       // Add 2 weeks to the start date since thats the range of our data
       const end = new Date(start + (Number(core.duration.WEEK) / 1000) * 2).getTime();
