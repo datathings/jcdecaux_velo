@@ -3,11 +3,16 @@
 use importer;
 use runtime;
 use io;
+use model;
 
 //Your apps entry point
 fn main() {
-    //Always import the data on startup, for simplicity purposes
-    importLocalData();
+    // If graph entry point is not defined start the local data import
+    if (contracts_by_name == null) {
+        // Will be displayed on the cl to inform the user we are loading data
+        println("Importing Data ...");
+        importLocalData();
+    }
 
     //Check if the api key is present, if so start the scheduler
     var key = File::open("api_key.txt");
