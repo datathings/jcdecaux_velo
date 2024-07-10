@@ -20,7 +20,7 @@ export class AppHome extends HTMLElement {
             innerPadding: 0.1,
           },
           xAxis: { outerPadding: 0, innerPadding: 0.1 },
-          colorScale: { colors: ['#fde725', '#21918c', '#440154'], range: [0, 1] },
+          colorScale: { colors: ['#440154', '#482475', '#414487', '#355f8d', '#2a788e', '#21918c', '#22a884', '#44bf70', '#7ad151', '#bddf26', '#fde725'], range: [0, 1] },
         }}
       />
     ) as GuiHeatmap;
