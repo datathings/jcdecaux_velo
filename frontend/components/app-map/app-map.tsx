@@ -173,11 +173,11 @@ export class AppMap extends HTMLElement {
       });
 
       this.map.on('dragend', () => {
-        this.fetchGeoJson();
+        this.fetchGeoJson(core.time.fromMs(this.selectedTime));
       });
 
       this.map.on('zoomend', () => {
-        this.fetchGeoJson();
+        this.fetchGeoJson(core.time.fromMs(this.selectedTime));
       });
 
       const start = Date.parse('2024-05-15T13:16:53.000Z');
