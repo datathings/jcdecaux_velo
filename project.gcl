@@ -9,6 +9,8 @@ use model;
 fn main() {
     // If graph entry point is not defined start the local data import
     if (contracts_by_name == null) {
+        // Will be displayed on the cl to inform the user we are loading data
+        println("Importing Data ...");
         importLocalData();
     }
 
