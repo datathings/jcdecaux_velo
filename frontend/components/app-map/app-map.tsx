@@ -9,7 +9,7 @@ export class AppMap extends HTMLElement {
   map!: maplibregl.Map;
   interval?: number;
 
-  selectedTime = Date.now();
+  selectedTime = Date.parse('2024-05-15T13:16:53.000Z');
 
   stationsMap: Map<number, api.StationDTO> = new Map();
 
@@ -171,7 +171,9 @@ export class AppMap extends HTMLElement {
       });
 
       const start = Date.parse('2024-05-15T13:16:53.000Z');
-      const end = Date.now();
+
+      // Add 2 weeks to the start date since thats the range of our data
+      const end = new Date(start + (Number(core.duration.WEEK) / 1000) * 2).getTime();
 
       const timeSliderValue = <span> {new Date(this.selectedTime).toLocaleString()} </span>;
 
@@ -192,7 +194,7 @@ export class AppMap extends HTMLElement {
             }}
             min={start.toString()}
             max={end.toString()}
-            value={start.toString()}
+            value={this.selectedTime.toString()}
           />
           <button
             style={{ width: '50px' }}
