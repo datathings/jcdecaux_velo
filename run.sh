@@ -1,5 +1,4 @@
-#Unzip the data
-unzip ./tmp.zip -d .
+#!/bin/bash
 #Install Greycat
 ./install.sh
 
