@@ -1,9 +1,15 @@
 app-home {
   display: grid;
 
+  article {
+    overflow: auto;
+    height :100%;
+  }
+
   .profile {
     padding: var(--spacing);
     position: relative;
+    overflow: auto;
 
     gui-heatmap {
       --m-left: 65px;

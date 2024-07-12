@@ -5,8 +5,11 @@ import { ChartConfig, GuiChart, GuiHeatmap } from '@greycat/web';
 import { api } from '../../common/project';
 
 export class AppHome extends HTMLElement {
+  stationInfoElement: HTMLElement | undefined;
+
   constructor() {
     super();
+    this.stationInfoElement = document.createElement('div');
   }
 
   async connectedCallback() {
@@ -32,6 +35,7 @@ export class AppHome extends HTMLElement {
       table: { cols: [] },
     } satisfies ChartConfig;
 
+
     this.appendChild(
       <article>
         {mapElement}
@@ -39,6 +43,7 @@ export class AppHome extends HTMLElement {
           <div className="empty-profile">
             <p>Click on a Station to view it's profile</p>
           </div>
+          {this.stationInfoElement}
           <h3>Typical Week Profile (availability)</h3>
           {profileTableElement}
           <hr />
@@ -66,6 +71,10 @@ export class AppHome extends HTMLElement {
 
         const timeSeries = await api.getStationTimeSeries(station.ref, null, null);
         stationTimeSeriesElement.value = timeSeries;
+
+        this.stationInfoElement?.replaceChildren(
+          <h2>{station?.detail.name}</h2>
+        )
 
         this.querySelector('.empty-profile')?.remove();
       } catch (error) {
