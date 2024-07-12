@@ -1,6 +1,9 @@
 app-home {
   display: grid;
 
+  gui-heatmap-tooltip .gui-heatmap-tooltip-value{
+    color: var(--text-0) !important;
+  }
   article {
     overflow: auto;
     height :100%;
