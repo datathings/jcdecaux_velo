@@ -104,7 +104,6 @@ export class AppMap extends HTMLElement {
             'text-size': 12,
           },
         });
-
       });
 
       // Create a popup, but don't add it to the map yet.
@@ -170,10 +169,17 @@ export class AppMap extends HTMLElement {
         this.fetchGeoJson(core.time.fromMs(this.selectedTime));
       });
 
+      // *** Historic data setting ***
+      // comment this section if you want to work with newly crawled data
       const start = Date.parse('2024-05-15T14:16:53.000Z');
+      const end = new Date(start + (Number(core.duration.WEEK) / 1000) * 2).getTime(); // Add 2 weeks to the start date since thats the range of our data
+      // *** Historic data setting ***
 
-      // Add 2 weeks to the start date since thats the range of our data
-      const end = new Date(start + (Number(core.duration.WEEK) / 1000) * 2).getTime();
+      // *** Current data setting ***
+      // uncomment this section if you want to work with newly crawled data
+      // const start = Date.parse('2024-07-11T15:00'); // fill in start date of your data crawling
+      // const end = Date.now(); // end at curent time
+      // *** Current data setting ***
 
       const timeSliderValue = <span> {new Date(this.selectedTime).toLocaleString()} </span>;
 
