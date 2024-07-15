@@ -18,12 +18,12 @@ app-home {
       --m-left: 65px;
 
       width: 100%;
-      height: 400px;
+      height: 350px;
     }
 
     gui-chart {
       width: 100%;
-      height: 400px;
+      height: 350px;
     }
 
     .empty-profile {
