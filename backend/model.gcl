@@ -84,13 +84,3 @@ type Contract {
     //will contain a list of refs to all stations of the contract indexed by the number property, Has Many relationship in sql
     stations: nodeIndex<int, node<Station>>;
 }
-
-
-
-
-
-
-
-
-
-
