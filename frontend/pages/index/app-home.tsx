@@ -14,7 +14,6 @@ export class AppHome extends HTMLElement {
     const profileTableElement = (
       <gui-heatmap
         config={{
-          table: { cols: [[]] },
           yAxis: {
             labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             innerPadding: 0.1,
@@ -29,7 +28,6 @@ export class AppHome extends HTMLElement {
       series: [{ type: 'line', yAxis: 'left', yCol: 2, xCol: 0, title: 'Available Bikes' }],
       yAxes: { left: { format: '~s' } },
       xAxis: { scale: 'time' },
-      table: { cols: [] },
     } satisfies ChartConfig;
 
     this.appendChild(

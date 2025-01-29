@@ -3,7 +3,6 @@ import style from './styles.json';
 import { api } from '../../common/project';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './app-map.css';
-import { core } from '@greycat/web';
 
 export class AppMap extends HTMLElement {
   map!: maplibregl.Map;
@@ -196,7 +195,7 @@ export class AppMap extends HTMLElement {
               //eslint-disable-next-line
               const val = parseInt((e.target as any).value);
               timeSliderValue.textContent = new Date(val).toLocaleString();
-              const time = core.time.fromMs(val);
+              const time = gc.core.time.fromMs(val);
               this.fetchGeoJson(time);
               this.selectedTime = val;
             }}
@@ -254,10 +253,10 @@ export class AppMap extends HTMLElement {
 
   disconnectedCallback() {}
 
-  async fetchGeoJson(t?: core.time) {
+  async fetchGeoJson(t?: gc.core.time) {
     const bounds = this.map.getBounds();
-    const from = core.geo.fromLatLng(bounds.getSouthWest().lat, bounds.getSouthWest().lng);
-    const to = core.geo.fromLatLng(bounds.getNorthEast().lat, bounds.getNorthEast().lng);
+    const from = gc.core.geo.fromLatLng(bounds.getSouthWest().lat, bounds.getSouthWest().lng);
+    const to = gc.core.geo.fromLatLng(bounds.getNorthEast().lat, bounds.getNorthEast().lng);
 
     const data = await api.getStations(from, to, t ?? null);
 
@@ -275,7 +274,7 @@ export class AppMap extends HTMLElement {
         properties: {
           availability:
             Number(station.record?.available_bikes ?? 1) / Number(station.record?.bike_stands ?? 1),
-          status: station.record?.status.value,
+          status: station.record?.status.key,
         },
       };
     });
@@ -292,9 +291,11 @@ declare global {
     'app-map': AppMap;
   }
 
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-map': GreyCat.Element<AppMap>;
+  namespace GreyCat {
+    namespace JSX {
+      interface IntrinsicElements {
+        'app-map': GreyCat.Element<AppMap>;
+      }
     }
   }
 }

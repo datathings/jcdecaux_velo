@@ -13,9 +13,9 @@
     "gen": "greycat codegen frontend/common/project"
   },
   "dependencies": {
-    "@greycat/web": "https://get.greycat.io/files/sdk/web/dev/7.0/7.0.110-dev.tgz",
+    "@greycat/web": "https://get.greycat.io/files/sdk/web/dev/7.0/7.0.287-dev.tgz",
     "@tabler/icons": "3.3.0",
-    "maplibre-gl": "4.2.0"
+    "maplibre-gl": "5.1.0"
   },
   "devDependencies": {
     "@types/node": "20.12.8",
