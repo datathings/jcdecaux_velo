@@ -283,31 +283,37 @@ type InternalRecordsDTO {
 fn importRecords() {
     var files = File::ls("tmp", ".csv", true);
 
+    var jobs = Array<Job> {};
     for (key, file in files) {
-        var fileName = file.name();
-        var split = fileName.indexOf('_');
-        var stationNumber = fileName.slice(split + 1, fileName.size() - 4);
-        var contractName = fileName.slice(0, split);
-        var contract = contracts_by_name.get(contractName);
-        var stationRef = contract?->stations.get(parseNumber(stationNumber) as int);
+        jobs.add(Job {function: importer::importRecord, arguments: [file] });
+    }
+    await(jobs);
+}
 
-        if (stationRef == null) {
-            continue;
-        }
+private fn importRecord(file: File) {
+    var fileName = file.name();
+    var split = fileName.indexOf('_');
+    var stationNumber = fileName.slice(split + 1, fileName.size() - 4);
+    var contractName = fileName.slice(0, split);
+    var contract = contracts_by_name.get(contractName);
+    var stationRef = contract?->stations.get(parseNumber(stationNumber) as int);
 
-        var cr = CsvReader<InternalRecordsDTO> { path: file.path, format: CsvFormat {} };
-        while (cr.can_read()) {
-            var r = cr.read();
+    if (stationRef == null) {
+        return;
+    }
 
-            var record = StationRecord {
-                status: r.status,
-                available_bikes: r.availableBikes,
-                available_bike_stands: r.availableBikeStands,
-                bike_stands: r.bikeStands,
-            };
+    var cr = CsvReader<InternalRecordsDTO> { path: file.path, format: CsvFormat {} };
+    while (cr.can_read()) {
+        var r = cr.read();
 
-            stationRef->records.setAt(r.time, record);
-            stationRef->profile->updateProfile(r.time, record);
-        }
+        var record = StationRecord {
+            status: r.status,
+            available_bikes: r.availableBikes,
+            available_bike_stands: r.availableBikeStands,
+            bike_stands: r.bikeStands,
+        };
+
+        stationRef->records.setAt(r.time, record);
+        stationRef->profile->updateProfile(r.time, record);
     }
 }
