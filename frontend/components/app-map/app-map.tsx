@@ -1,6 +1,5 @@
 import maplibregl, { StyleSpecification } from 'maplibre-gl';
 import style from './styles.json';
-import { api } from '../../common/project';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './app-map.css';
 
@@ -10,7 +9,7 @@ export class AppMap extends HTMLElement {
 
   selectedTime = Date.now();
 
-  stationsMap: Map<number, api.StationDTO> = new Map();
+  stationsMap: Map<number, gc.StationDTO> = new Map();
 
   constructor() {
     super();
@@ -87,33 +86,6 @@ export class AppMap extends HTMLElement {
             'text-size': 12,
           },
         });
-
-        this.map.addLayer({
-          id: 'stations-heat',
-          type: 'heatmap',
-          source: 'stations',
-          maxzoom: 13,
-          minzoom: 10,
-          paint: {
-            'heatmap-weight': ['get', 'availability'],
-            'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 3],
-            'heatmap-color': [
-              'interpolate',
-              ['linear'],
-              ['heatmap-density'],
-              0,
-              'rgba(33,102,172,0)',
-              0.1,
-              '#fde725',
-              0.5,
-              '#21918c',
-              1,
-              '#440154',
-            ],
-            'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 9, 20, 13, 35],
-            'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 0.8],
-          },
-        });
       });
 
       // Create a popup, but don't add it to the map yet.
@@ -143,7 +115,6 @@ export class AppMap extends HTMLElement {
         // based on the feature found.
 
         const station = this.stationsMap.get(e.features[0].id as number);
-        console.log(station);
         if (station === undefined) return;
 
         popup
@@ -258,7 +229,7 @@ export class AppMap extends HTMLElement {
     const from = gc.core.geo.fromLatLng(bounds.getSouthWest().lat, bounds.getSouthWest().lng);
     const to = gc.core.geo.fromLatLng(bounds.getNorthEast().lat, bounds.getNorthEast().lng);
 
-    const data = await api.getStations(from, to, t ?? null);
+    const data = await gc.getStations(from, to, t ?? null);
 
     this.stationsMap.clear();
     const features: GeoJSON.Feature[] = data.map((station, idx) => {

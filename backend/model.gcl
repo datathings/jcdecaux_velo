@@ -33,8 +33,8 @@ type StationRecord {
     available_bikes: int;
 }
 enum StationStatus {
-    open("open");
-    closed("closed");
+    open("OPEN");
+    closed("CLOSED");
 }
 
 type StationProfile {
@@ -45,8 +45,8 @@ type StationProfile {
         if (data.bike_stands > 0) {
             //convert the time to the correct slot
             var date = t.toDate(null);
-            var slot = this.hourlyProfile.quantizer.quantize(Array<int> {date.day, date.hour});
-            this.hourlyProfile.add(slot, data.available_bikes as float / data.bike_stands as float);
+            var slot = this.hourlyProfile.quantizer.quantize(Array<int> {t.dayOfWeek(null), date.hour});
+            this.hourlyProfile.add(this.hourlyProfile.quantizer.slot_vector(slot), data.available_bikes as float / data.bike_stands as float);
         }
     }
 

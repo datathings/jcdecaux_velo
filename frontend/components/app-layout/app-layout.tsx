@@ -1,5 +1,4 @@
-import { logout } from '@greycat/web';
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import LogoIcon from './logo.svg?raw';
 import { icon } from '../../common/utils';
 import { APP_LAYOUT_THEME } from '../../common/constants';
@@ -97,7 +96,7 @@ export class AppLayout extends HTMLElement {
         onclick={toggleTheme}
         name={themeIcon[initialTheme]}
       ></sl-icon-button>
-    ) as SlIconButton;
+    ) as any;
 
     return [
       <li>{toggleThemeBtn}</li>,
@@ -132,7 +131,7 @@ export class AppLayout extends HTMLElement {
   }
 
   async signout() {
-    await logout();
+    await gc.sdk.logout();
     location.reload();
   }
 }

@@ -2,7 +2,6 @@ import './app-home.css';
 import '../../components/app-map';
 import { AppMap } from '../../components/app-map';
 import { ChartConfig, GuiChart, GuiHeatmap } from '@greycat/web';
-import { api } from '../../common/project';
 
 export class AppHome extends HTMLElement {
   constructor() {
@@ -58,11 +57,12 @@ export class AppHome extends HTMLElement {
       try {
         const station = mapElement.stationsMap.get(e.features[0].id as number);
         if (!station) return;
+        console.log(station);
 
-        const profile = await api.getStationProfile(station.ref);
+        const profile = await gc.getStationProfile(station.ref);
         profileTableElement.value = profile;
 
-        const timeSeries = await api.getStationTimeSeries(station.ref, null, null);
+        const timeSeries = await gc.getStationTimeSeries(station.ref, null, null);
         stationTimeSeriesElement.value = timeSeries;
 
         this.querySelector('.empty-profile')?.remove();

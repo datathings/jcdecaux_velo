@@ -244,10 +244,10 @@ fn importData() {
                 bonus: stationObj.detail.bonus,
             };
 
-            var quantizer = MultiQuantizer<int> {
-                quantizers: Array<LinearQuantizer<int>> {
-                    LinearQuantizer<int> {min: 0, max: 6, bins: 7 },
-                    LinearQuantizer<int> {min: 0, max: 23, bins: 24 }
+            var quantizer = MultiQuantizer {
+                quantizers: Array<Quantizer> {
+                    LinearQuantizer {min: 0, max: 6, bins: 7 },
+                    LinearQuantizer {min: 0, max: 23, bins: 24 }
                 }
             };
             var stationProfile = StationProfile {
