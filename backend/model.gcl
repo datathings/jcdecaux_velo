@@ -1,7 +1,4 @@
-use util;
-
 var stations_by_geo: nodeGeo<node<Station>>;
-
 // will contain all contracts indexed by contract name
 var contracts_by_name: nodeIndex<String, node<Contract>>;
 
@@ -48,15 +45,13 @@ type StationProfile {
         if (data.bike_stands > 0) {
             //convert the time to the correct slot
             var date = t.toDate(null);
-            var slot = 24 * t.dayOfWeek(null) + date.hour;
-
+            var slot = this.hourlyProfile.quantizer.quantize(Array<int> {date.day, date.hour});
             this.hourlyProfile.add(slot, data.available_bikes as float / data.bike_stands as float);
         }
     }
 
     fn profileToTable(): Table {
-        var table = Table::new(24);
-
+        var table = Table {};
         var endSlot = 24 * 7;
         var startSlot = 0;
 
@@ -66,7 +61,7 @@ type StationProfile {
 
             var val = this.hourlyProfile.avg(startSlot);
 
-            table.set(row, col, val);
+            table.set_cell(row, col, val);
             startSlot++;
         }
         return table;

@@ -1,5 +1,7 @@
 gcdata
 tmp
-node_modules
 api_key.txt
 dist
+bin
+files
+lib

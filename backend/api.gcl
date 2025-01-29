@@ -1,7 +1,3 @@
-use model; 
-use util;
-
-
 // Object to be used by the ui
 type StationDTO {
     ref: node<Station>;
@@ -15,7 +11,7 @@ type StationDTO {
 // To: the bottom left corner of the map
 @expose
 fn getStations(from: geo, to: geo, t: time?): Array<StationDTO> {
-    var result: Array<StationDTO> = [];
+    var result = Array<StationDTO> {};
 
     // greycat's geo index supports range queries
     for (coords, station in stations_by_geo[from..to]) {
@@ -52,7 +48,7 @@ fn getStationProfile(station: node<Station>): Table {
 @expose
 fn getStationTimeSeries(station: node<Station>, from: time?, to: time?): Table {
     //Will return 1000 points on the specifed range or total if none specifed using the adaptative sampling method
-    var table = nodeTime::sample([station->records], from, to, 1000, SamplingMode::adaptative, null, null);
+    var table = nodeTime::sample(Array<nodeTime> {station->records}, from, to, 1000, SamplingMode::adaptative, null, null);
 
     //The returned Talbe  has on col 0 the timestamp and on col 1 the StationData Object, but for the chart visualization we currently do not support objects so we
     //leverage our  table mapping to extract the availableBikes from the StationData object into its own column
@@ -63,6 +59,5 @@ fn getStationTimeSeries(station: node<Station>, from: time?, to: time?): Table {
 
     //The mapping will add a new column with the extracted field
 
-    var mappedTable = Table::applyMappings(table, [mapping]);
-    return mappedTable;
+    return Table::applyMappings(table, Array<TableColumnMapping> {mapping});
 }
