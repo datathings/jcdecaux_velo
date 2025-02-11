@@ -58,8 +58,7 @@ type StationProfile {
         while (startSlot < endSlot) {
             var row = startSlot / 24;
             var col = startSlot % 24;
-
-            var val = this.hourlyProfile.avg(startSlot);
+            var val = this.hourlyProfile.avg(Array<int> {row, col});
 
             table.set_cell(row, col, val);
             startSlot++;

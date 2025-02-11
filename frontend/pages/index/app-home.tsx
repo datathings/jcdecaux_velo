@@ -36,7 +36,7 @@ export class AppHome extends HTMLElement {
             <p>Click on a Station to view it's profile</p>
           </div>
           <h3>Typical Week Profile (availability)</h3>
-          {profileTableElement}
+          <div style={{ display: 'flex' }}>{profileTableElement}</div>
           <hr />
           <h3>Historic Data</h3>
           <div style={{ display: 'flex' }}>
