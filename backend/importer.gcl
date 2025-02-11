@@ -150,7 +150,6 @@ fn stationStatusExportMapper(status: StationStatus): String {
 
 
 /** The following code is to simply allow to load and dump data to launch the app with some data without requiring an api key*/
-
 fn exportRecords() {
     for (_, contract in contracts_by_name) {
         for (number, station in contract->stations) {
@@ -214,17 +213,16 @@ fn importData() {
     while (fr.can_read()) {
         var contractObj = fr.read();
 
-        var contract = Contract {
-            name: contractObj.name,
-            cities: contractObj.cities,
-            commercial_name: contractObj.commercial_name,
-            country_code: contractObj.country_code,
-            stations: nodeIndex<int, node<Station>> {},
-        };
-
-        var contractRef = contracts_by_name .get(contract.name);
+        var contractRef = contracts_by_name .get(contractObj.name);
 
         if (contractRef == null) {
+            var contract = Contract {
+                name: contractObj.name,
+                cities: contractObj.cities,
+                commercial_name: contractObj.commercial_name,
+                country_code: contractObj.country_code,
+                stations: nodeIndex<int, node<Station>> {},
+            };
             contractRef = node<Contract> {contract};
             contracts_by_name.set(contract.name, contractRef);
         }
@@ -233,7 +231,7 @@ fn importData() {
             var number = stationObj.number;
 
             //If the station already exists we skip it
-            if (contract.stations.get(number) != null) {
+            if (contractRef->stations.get(number) != null) {
                 continue;
             }
 
@@ -264,7 +262,7 @@ fn importData() {
             };
 
             var stationRef = node<Station> {station};
-            contract.stations.set(station.number, stationRef);
+            contractRef->stations.set(station.number, stationRef);
             stations_by_geo.set(station.position, stationRef);
         }
     }
@@ -285,9 +283,8 @@ fn importRecords() {
 
     var jobs = Array<Job> {};
     for (key, file in files) {
-        jobs.add(Job {function: importer::importRecord, arguments: [file] });
+        importRecord(file);
     }
-    await(jobs);
 }
 
 private fn importRecord(file: File) {

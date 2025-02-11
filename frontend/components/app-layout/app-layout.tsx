@@ -34,11 +34,7 @@ export class AppLayout extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log('AppLayout connected');
-
     this.main.replaceChildren(...this.childNodes);
-
-    console.log('AppLayout connected 2');
 
     this.appendChild(
       <>

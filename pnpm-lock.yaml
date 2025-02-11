@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@greycat/web':
-    specifier: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.287-dev.tgz
-    version: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.287-dev.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)'
+    specifier: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz
+    version: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)'
   '@tabler/icons':
     specifier: 3.3.0
     version: 3.3.0
@@ -2217,11 +2217,11 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  '@get.greycat.io/files/sdk/web/dev/7.0/7.0.287-dev.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)':
-    resolution: {tarball: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.287-dev.tgz}
-    id: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.287-dev.tgz'
+  '@get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)':
+    resolution: {tarball: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz}
+    id: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz'
     name: '@greycat/web'
-    version: 7.0.287-dev
+    version: 7.0.299-dev
     dependencies:
       '@shoelace-style/shoelace': 2.19.0(@floating-ui/utils@0.2.9)(@types/react@18.3.1)
       d3: 7.8.5

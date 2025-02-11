@@ -1,7 +1,6 @@
 import './app-home.css';
 import '../../components/app-map';
 import { AppMap } from '../../components/app-map';
-import { ChartConfig, GuiChart, GuiHeatmap } from '@greycat/web';
 
 export class AppHome extends HTMLElement {
   constructor() {
@@ -21,13 +20,13 @@ export class AppHome extends HTMLElement {
           colorScale: { colors: ['#fde725', '#21918c', '#440154'] },
         }}
       />
-    ) as GuiHeatmap;
-    const stationTimeSeriesElement = (<gui-chart />) as GuiChart;
+    ) as gc.GuiHeatmap;
+    const stationTimeSeriesElement = (<gui-chart />) as gc.GuiChart;
     stationTimeSeriesElement.config = {
       series: [{ type: 'line', yAxis: 'left', yCol: 2, xCol: 0, title: 'Available Bikes' }],
       yAxes: { left: { format: '~s' } },
       xAxis: { scale: 'time' },
-    } satisfies ChartConfig;
+    };
 
     this.appendChild(
       <article>
@@ -57,7 +56,6 @@ export class AppHome extends HTMLElement {
       try {
         const station = mapElement.stationsMap.get(e.features[0].id as number);
         if (!station) return;
-        console.log(station);
 
         const profile = await gc.getStationProfile(station.ref);
         profileTableElement.value = profile;

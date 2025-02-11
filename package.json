@@ -13,7 +13,7 @@
     "gen": "greycat codegen frontend/common/project"
   },
   "dependencies": {
-    "@greycat/web": "https://get.greycat.io/files/sdk/web/dev/7.0/7.0.287-dev.tgz",
+    "@greycat/web": "https://get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz",
     "@tabler/icons": "3.3.0",
     "maplibre-gl": "5.1.0"
   },

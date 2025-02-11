@@ -26,6 +26,6 @@
 
     "types": ["@greycat/web", "vite/client"]
   },
-  "include": ["frontend/pages", "frontend/components", "frontend/common"],
+  "include": ["frontend/pages", "frontend/components", "frontend/common", "project.d.ts"],
   "exclude": ["node_modules", "vite.config.ts"]
 }
