@@ -2,7 +2,7 @@ app-home {
   display: grid;
 
   .profile {
-    padding: var(--spacing);
+    margin: var(--spacing);
     position: relative;
 
     gui-heatmap {
@@ -64,10 +64,6 @@ app-home {
     article {
       display: grid;
       grid-template-columns: 1fr 700px;
-
-      .profile {
-        border-left: 2px solid var(--color-1);
-      }
 
       .empty-profile {
         align-items: center;

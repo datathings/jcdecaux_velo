@@ -18,6 +18,7 @@ export class AppHome extends HTMLElement {
           },
           xAxis: { outerPadding: 0, innerPadding: 0.1 },
           colorScale: { colors: ['#fde725', '#21918c', '#440154'] },
+          tooltip: { render: () => {} },
         }}
       />
     ) as gc.GuiHeatmap;
