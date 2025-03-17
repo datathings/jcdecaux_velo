@@ -62,6 +62,8 @@ export class AppHome extends HTMLElement {
         profileTableElement.value = profile;
 
         const timeSeries = await gc.getStationTimeSeries(station.ref, null, null);
+        console.log(timeSeries);
+
         stationTimeSeriesElement.value = timeSeries;
 
         this.querySelector('.empty-profile')?.remove();
@@ -81,9 +83,11 @@ declare global {
     'app-home': AppHome;
   }
 
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-home': GreyCat.Element<AppHome>;
+  namespace GreyCat {
+    namespace JSX {
+      interface IntrinsicElements {
+        'app-home': GreyCat.Element<AppHome>;
+      }
     }
   }
 }

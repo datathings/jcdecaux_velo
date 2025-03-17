@@ -1,5 +1,5 @@
 @include("backend");
-@library("std", "7.0.1440-dev");
+@library("std", "7.0.1638-testing");
 
 //Your apps entry point
 fn main() {

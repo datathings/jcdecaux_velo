@@ -80,6 +80,7 @@ fn importStations() {
             };
             var stationProfile = StationProfile {
                 hourlyProfile: GaussianProfile { quantizer: quantizer, precision: FloatPrecision::p10 },
+                hourlyQuantizer: quantizer
             };
 
             var details = StationDetail {
@@ -170,6 +171,7 @@ fn exportRecords() {
 
 
 //export to a generic format
+@volatile
 type InternalContractDTO {
     name: String;
     cities: Array<String>?;
@@ -177,6 +179,7 @@ type InternalContractDTO {
     country_code: String?;
     stations: Array<InternalStationDTO>;
 }
+@volatile
 type InternalStationDTO {
     number: int;
     position: geo;
@@ -250,6 +253,7 @@ fn importData() {
             };
             var stationProfile = StationProfile {
                 hourlyProfile: GaussianProfile { quantizer: quantizer, precision: FloatPrecision::p10 },
+                hourlyQuantizer: clone(quantizer)
             };
 
             var station = Station {

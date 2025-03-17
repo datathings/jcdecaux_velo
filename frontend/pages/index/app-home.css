@@ -1,5 +1,12 @@
+@import '@greycat/web/greycat.css';
+
+body {
+  height: 100vh;
+}
+
 app-home {
   display: grid;
+  height: 100%;
 
   .profile {
     margin: var(--spacing);

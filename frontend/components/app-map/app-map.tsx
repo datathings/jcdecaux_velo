@@ -2,14 +2,19 @@ import maplibregl, { StyleSpecification } from 'maplibre-gl';
 import style from './styles.json';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './app-map.css';
+import { GuiInputTime } from '@greycat/web';
 
 export class AppMap extends HTMLElement {
   map!: maplibregl.Map;
   interval?: number;
 
   selectedTime = Date.now();
+  minTime: gc.time | null = null;
+  maxTime: gc.time | null = null;
 
-  stationsMap: Map<number, gc.StationDTO> = new Map();
+  stationsMap: Map<number, gc.StationItemView> = new Map();
+
+  timeInput!: GuiInputTime;
 
   constructor() {
     super();
@@ -150,30 +155,19 @@ export class AppMap extends HTMLElement {
         this.fetchGeoJson();
       });
 
-      const start = Date.parse('2024-05-15T13:16:53.000Z');
-      const end = Date.now();
-
-      const timeSliderValue = <span> {new Date(this.selectedTime).toLocaleString()} </span>;
+      this.timeInput = (
+        <gui-input-time
+          id="time-slider-input"
+          ongui-change={(e) => {
+            this.fetchGeoJson(e.detail);
+            this.selectedTime = e.detail;
+          }}
+        />
+      ) as GuiInputTime;
 
       const timeSlider = (
         <div id={'time-slider'}>
-          <label htmlFor="">Time: {timeSliderValue}</label>
-          <input
-            id="time-slider-input"
-            type="range"
-            step={'3600000'}
-            onchange={(e) => {
-              //eslint-disable-next-line
-              const val = parseInt((e.target as any).value);
-              timeSliderValue.textContent = new Date(val).toLocaleString();
-              const time = gc.core.time.fromMs(val);
-              this.fetchGeoJson(time);
-              this.selectedTime = val;
-            }}
-            min={start.toString()}
-            max={end.toString()}
-            value={start.toString()}
-          />
+          {this.timeInput}
           <sl-button
             style={{ width: '50px' }}
             onclick={(e) => {
@@ -182,20 +176,19 @@ export class AppMap extends HTMLElement {
                 this.interval = undefined;
                 (e.target as HTMLButtonElement).textContent = '⏵';
               } else {
-                const input = this.querySelector('#time-slider-input') as HTMLInputElement;
                 (e.target as HTMLButtonElement).textContent = '⏸';
                 this.interval = setInterval(() => {
-                  input.value = (parseInt(input.value) + 3600000).toString();
-                  if (input.value >= end.toString()) {
-                    input.value = start.toString();
-                    (e.target as HTMLButtonElement).textContent = '⏵';
-                    input.dispatchEvent(new Event('change'));
-
-                    clearInterval(this.interval);
-                    this.interval = undefined;
+                  if (this.timeInput.value && this.maxTime) {
+                    this.timeInput.value = this.timeInput.value.add(gc.duration.from_hours(1));
+                    if (this.timeInput.value >= this.maxTime) {
+                      this.timeInput.value = this.minTime;
+                      (e.target as HTMLButtonElement).textContent = '⏵';
+                      clearInterval(this.interval);
+                      this.interval = undefined;
+                    }
+                    //input.dispatchEvent(new Event('change'));
                   }
-                  input.dispatchEvent(new Event('change'));
-                }, 500);
+                }, 1000);
               }
             }}
           >
@@ -231,8 +224,20 @@ export class AppMap extends HTMLElement {
 
     const data = await gc.getStations(from, to, t ?? null);
 
+    this.timeInput.value = data.minTime;
+    clearInterval(this.interval);
+
+    if (data.minTime) {
+      this.timeInput.input.min = data.minTime.epochMs;
+      this.minTime = data.minTime;
+    }
+    if (data.maxTime) {
+      this.timeInput.input.max = data.maxTime.epochMs;
+      this.maxTime = data.maxTime;
+    }
+
     this.stationsMap.clear();
-    const features: GeoJSON.Feature[] = data.map((station, idx) => {
+    const features: GeoJSON.Feature[] = data.stations.map((station, idx) => {
       this.stationsMap.set(idx, station);
 
       return {

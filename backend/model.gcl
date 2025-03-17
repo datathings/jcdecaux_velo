@@ -40,13 +40,14 @@ enum StationStatus {
 type StationProfile {
     //24 * 7 slots, one for each hour of the week, will help to visualize the station activity in a typical week
     hourlyProfile: GaussianProfile;
+    hourlyQuantizer: MultiQuantizer;
 
     fn updateProfile(t: time, data: StationRecord) {
         if (data.bike_stands > 0) {
             //convert the time to the correct slot
             var date = t.toDate(null);
             var slot = this.hourlyProfile.quantizer.quantize(Array<int> {t.dayOfWeek(null), date.hour});
-            this.hourlyProfile.add(this.hourlyProfile.quantizer.slot_vector(slot), data.available_bikes as float / data.bike_stands as float);
+            this.hourlyProfile.add(this.hourlyQuantizer.slot_vector(slot), data.available_bikes as float / data.bike_stands as float);
         }
     }
 

@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@greycat/web':
-    specifier: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz
-    version: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)'
+    specifier: https://get.greycat.io/files/sdk/web/testing/7.0/7.0.0-testing.tgz
+    version: '@get.greycat.io/files/sdk/web/testing/7.0/7.0.0-testing.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)'
   '@tabler/icons':
     specifier: 3.3.0
     version: 3.3.0
@@ -16,9 +16,6 @@ dependencies:
     version: 5.1.0
 
 devDependencies:
-  '@eslint/js':
-    specifier: 9.1.1
-    version: 9.1.1
   '@types/node':
     specifier: 20.12.8
     version: 20.12.8
@@ -31,9 +28,6 @@ devDependencies:
   eslint:
     specifier: 8.56.0
     version: 8.56.0
-  http-proxy:
-    specifier: 1.18.1
-    version: 1.18.1
   lightningcss:
     specifier: 1.24.1
     version: 1.24.1
@@ -298,11 +292,6 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@eslint/js@9.1.1:
-    resolution: {integrity: sha512-5WoDz3Y19Bg2BnErkZTp0en+c/i9PvgFS7MBe1+m60HjFr0hrphlAGp4yzI7pxpt4xShln4ZyYp4neJm8hmOkQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    dev: true
-
   /@floating-ui/core@1.6.1:
     resolution: {integrity: sha512-42UH54oPZHPdRHdw6BgoBD6cg/eVTmVrFcgeRDM3jbO7uxSoipVcmcIGFcA5jmOHO5apcyvBhkSKES3fQJnu7A==}
     dependencies:
@@ -564,8 +553,8 @@ packages:
     resolution: {integrity: sha512-r4C9C/5kSfMBIr0D9imvpRdCNXtUNgyYThc4YlS6K5Hchv1UyxNQ9mxwj+BTRH2i1Neits260sR3OjKMnplsFA==}
     dev: false
 
-  /@shoelace-style/shoelace@2.19.0(@floating-ui/utils@0.2.9)(@types/react@18.3.1):
-    resolution: {integrity: sha512-QiVKspCunGVMWIoAsaSLVHc4dC6BJUBZTxIp5FFDhLSbm6y9MaJxqi4vi48H/+2W023hM6ixW3XAiuOTD+Gjmg==}
+  /@shoelace-style/shoelace@2.20.0(@floating-ui/utils@0.2.9)(@types/react@18.3.1):
+    resolution: {integrity: sha512-Qq/kPtWC//HVyHX6EZ/i5y9zTMORjqV4lrxU2sbHLh+qdc9DlroYVSSqa2eqkmSzeLO+gHPZrjYmxDTja85iAA==}
     engines: {node: '>=14.17.0'}
     dependencies:
       '@ctrl/tinycolor': 4.1.0
@@ -1120,8 +1109,8 @@ packages:
       d3-transition: 3.0.1(d3-selection@3.0.0)
     dev: false
 
-  /d3@7.8.5:
-    resolution: {integrity: sha512-JgoahDG51ncUfJu6wX/1vWQEqOflgXyl4MaHqlcSruTez7yhaRKR9i8VjjcQGeS2en/jnFivXuaIMnseMMt0XA==}
+  /d3@7.9.0:
+    resolution: {integrity: sha512-e1U46jVP+w7Iut8Jt8ri1YsPOvFpg46k+K8TpCb0P+zjCkjkPnV7WzfDJzMHy1LnA+wj5pLT1wjO901gLXeEhA==}
     engines: {node: '>=12'}
     dependencies:
       d3-array: 3.2.4
@@ -1191,8 +1180,8 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /dockview-core@1.10.1:
-    resolution: {integrity: sha512-uebSq/KUyNxVNiu0NCLADMr6ewPhaNj6L+hELbz6HsIfUrc/tNYTU72U1rwUyWeDL8cYkIWd7fUsZvUp6Ux/Dw==}
+  /dockview-core@3.2.0:
+    resolution: {integrity: sha512-SmLbj1WkqOoSU8SQAqG6RLeZc+VqBAi0Uch80NvCbF3QyeVe2QIuy9SwEbjoGfesskWC+HUeYEoV/edARFjYOg==}
     dev: false
 
   /doctrine@3.0.0:
@@ -1337,6 +1326,9 @@ packages:
 
   /eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -1405,11 +1397,14 @@ packages:
   /follow-redirects@1.15.6:
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
+    requiresBuild: true
     peerDependencies:
       debug: '*'
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+    optional: true
 
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
@@ -1501,12 +1496,15 @@ packages:
   /http-proxy@1.18.1:
     resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
     engines: {node: '>=8.0.0'}
+    requiresBuild: true
     dependencies:
       eventemitter3: 4.0.7
       follow-redirects: 1.15.6
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
+    dev: false
+    optional: true
 
   /iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
@@ -1969,6 +1967,9 @@ packages:
 
   /requires-port@1.0.0:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -2217,18 +2218,19 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  '@get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)':
-    resolution: {tarball: https://get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz}
-    id: '@get.greycat.io/files/sdk/web/dev/7.0/7.0.299-dev.tgz'
+  '@get.greycat.io/files/sdk/web/testing/7.0/7.0.0-testing.tgz(@floating-ui/utils@0.2.9)(@types/react@18.3.1)':
+    resolution: {tarball: https://get.greycat.io/files/sdk/web/testing/7.0/7.0.0-testing.tgz}
+    id: '@get.greycat.io/files/sdk/web/testing/7.0/7.0.0-testing.tgz'
     name: '@greycat/web'
-    version: 7.0.299-dev
+    version: 7.0.0-testing
     dependencies:
-      '@shoelace-style/shoelace': 2.19.0(@floating-ui/utils@0.2.9)(@types/react@18.3.1)
-      d3: 7.8.5
-      dockview-core: 1.10.1
+      '@shoelace-style/shoelace': 2.20.0(@floating-ui/utils@0.2.9)(@types/react@18.3.1)
+      d3: 7.9.0
+      dockview-core: 3.2.0
       lit-html: 3.2.1
     optionalDependencies:
       http-proxy: 1.18.1
+      maplibre-gl: 5.1.0
     transitivePeerDependencies:
       - '@floating-ui/utils'
       - '@types/react'
