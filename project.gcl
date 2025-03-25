@@ -1,5 +1,6 @@
 @include("backend");
 @library("std", "7.0.1638-testing");
+@library("explorer", "7.0.4-testing");
 
 //Your apps entry point
 fn main() {
@@ -8,6 +9,7 @@ fn main() {
         // Will be displayed on the cl to inform the user we are loading data
         println("Importing Data ...");
         importLocalData();
+        println("Done");
     }
 
     //Check if the api key is present, if so start the scheduler

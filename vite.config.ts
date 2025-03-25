@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       emptyOutDir: true,
-      outDir: resolve(__dirname, 'dist'),
+      outDir: resolve(__dirname, 'webroot'),
       cssMinify: 'lightningcss',
       rollupOptions: {
         input: {

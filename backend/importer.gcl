@@ -47,7 +47,7 @@ fn importStations() {
     var headers = [HttpHeader { name: "accept", value: "application/json" }];
 
     //Will return an array of objects with all the contracts
-    var data = Http::get("https://api.jcdecaux.com/vls/v1/stations?apiKey=${apiKey}", headers) as any?;
+    var data = Http::get("https://api.jcdecaux.com/vls/v1/stations?apiKey=${apiKey}", headers);
 
     for (_, item: Map in data?) {
         //Get the station number, which is unique by contract
@@ -276,6 +276,7 @@ fn importData() {
 // Used for importing and exporting for internal use only
 @volatile
 type InternalRecordsDTO {
+    @format(DurationUnit::microseconds)
     time: time;
     status: StationStatus;
     availableBikes: int;

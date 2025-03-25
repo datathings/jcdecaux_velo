@@ -159,8 +159,10 @@ export class AppMap extends HTMLElement {
         <gui-input-time
           id="time-slider-input"
           ongui-change={(e) => {
-            this.fetchGeoJson(e.detail);
-            this.selectedTime = e.detail;
+            if (e.detail) {
+              this.fetchGeoJson(e.detail);
+              this.selectedTime = e.detail;
+            }
           }}
         />
       ) as GuiInputTime;
@@ -177,7 +179,7 @@ export class AppMap extends HTMLElement {
                 (e.target as HTMLButtonElement).textContent = '⏵';
               } else {
                 (e.target as HTMLButtonElement).textContent = '⏸';
-                this.interval = setInterval(() => {
+                this.interval = window.setInterval(() => {
                   if (this.timeInput.value && this.maxTime) {
                     this.timeInput.value = this.timeInput.value.add(gc.duration.from_hours(1));
                     if (this.timeInput.value >= this.maxTime) {
@@ -185,8 +187,9 @@ export class AppMap extends HTMLElement {
                       (e.target as HTMLButtonElement).textContent = '⏵';
                       clearInterval(this.interval);
                       this.interval = undefined;
+                    } else {
+                      this.fetchGeoJson(this.timeInput.value);
                     }
-                    //input.dispatchEvent(new Event('change'));
                   }
                 }, 1000);
               }
@@ -223,16 +226,18 @@ export class AppMap extends HTMLElement {
     const to = gc.core.geo.fromLatLng(bounds.getNorthEast().lat, bounds.getNorthEast().lng);
 
     const data = await gc.getStations(from, to, t ?? null);
+    console.log(t);
 
-    this.timeInput.value = data.minTime;
-    clearInterval(this.interval);
+    if (this.timeInput.value == null) {
+      this.timeInput.value = data.minTime;
+    }
 
     if (data.minTime) {
-      this.timeInput.input.min = data.minTime.epochMs;
+      this.timeInput.input.min = data.minTime.toDate().toISOString().slice(0, -8);
       this.minTime = data.minTime;
     }
     if (data.maxTime) {
-      this.timeInput.input.max = data.maxTime.epochMs;
+      this.timeInput.input.max = data.maxTime.toDate().toISOString().slice(0, -8);
       this.maxTime = data.maxTime;
     }
 

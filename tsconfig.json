@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "ESNext",
     "skipLibCheck": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2024"],
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "allowJs": true,
 
     /* Bundler mode */
@@ -22,10 +22,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
-    "useDefineForClassFields": false,
 
-    "types": ["@greycat/web"]
   },
   "include": ["frontend/pages", "frontend/components", "frontend/common", "project.d.ts"],
-  "exclude": ["node_modules", "vite.config.ts"]
+  "exclude": [ "vite.config.ts"]
 }
