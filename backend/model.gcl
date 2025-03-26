@@ -1,6 +1,6 @@
 var stations_by_geo: nodeGeo<node<Station>>;
 // will contain all contracts indexed by contract name
-var contracts_by_name: nodeIndex<String, node<Contract>>?;
+var contracts_by_name: nodeIndex<String, node<Contract>>;
 
 type Station {
     number: int;

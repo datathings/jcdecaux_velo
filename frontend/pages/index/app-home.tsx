@@ -66,7 +66,6 @@ export class AppHome extends HTMLElement {
         profileTableElement.value = profile;
 
         const timeSeries = await gc.getStationTimeSeries(station.ref, null, null);
-        console.log(timeSeries);
 
         stationTimeSeriesElement.value = timeSeries;
 

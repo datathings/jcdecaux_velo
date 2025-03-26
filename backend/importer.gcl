@@ -55,7 +55,7 @@ fn importStations() {
 
         //Get the contract name to get our locally stored contract indexed by contract name
         var contractName = item.get("contract_name") as String;
-        var contract = contracts_by_name?.get(contractName);
+        var contract = contracts_by_name.get(contractName);
 
         if (contract == null) {
             //If the contract does not exist we skip the station, thiws could happen if since the last time we fetched the contracts a new contract with stations has been added, 
@@ -152,7 +152,7 @@ fn stationStatusExportMapper(status: StationStatus): String {
 
 /** The following code is to simply allow to load and dump data to launch the app with some data without requiring an api key*/
 fn exportRecords() {
-    for (_, contract in contracts_by_name?) {
+    for (_, contract in contracts_by_name) {
         for (number, station in contract->stations) {
             var cr = CsvWriter<InternalRecordsDTO> { path: "tmp/${contract->name}_${number}.csv", format: CsvFormat {} };
 
@@ -188,7 +188,7 @@ type InternalStationDTO {
 fn exportData() {
     var fw = JsonWriter { path: "tmp/data.ndjson" };
 
-    for (_, contractRef in contracts_by_name?) {
+    for (_, contractRef in contracts_by_name) {
         var contract = contractRef.resolve();
         var contractObj = InternalContractDTO {
             name: contract.name,

@@ -8,7 +8,6 @@ export class AppMap extends HTMLElement {
   map!: maplibregl.Map;
   interval?: number;
 
-  selectedTime = Date.now();
   minTime: gc.time | null = null;
   maxTime: gc.time | null = null;
 
@@ -43,7 +42,7 @@ export class AppMap extends HTMLElement {
           clusterMaxZoom: 9,
           clusterRadius: 40,
         });
-        await this.fetchGeoJson(core.time.fromMs(this.selectedTime));
+        await this.fetchGeoJson();
 
         this.map.addLayer({
           id: 'stations',
@@ -164,11 +163,11 @@ export class AppMap extends HTMLElement {
       });
 
       this.map.on('dragend', () => {
-        this.fetchGeoJson(core.time.fromMs(this.selectedTime));
+        this.fetchGeoJson();
       });
 
       this.map.on('zoomend', () => {
-        this.fetchGeoJson(core.time.fromMs(this.selectedTime));
+        this.fetchGeoJson();
       });
 
       this.timeInput = (
@@ -177,7 +176,6 @@ export class AppMap extends HTMLElement {
           ongui-change={(e) => {
             if (e.detail) {
               this.fetchGeoJson(e.detail);
-              this.selectedTime = e.detail;
             }
           }}
         />
@@ -236,16 +234,16 @@ export class AppMap extends HTMLElement {
 
   disconnectedCallback() {}
 
-  async fetchGeoJson(t?: gc.core.time) {
+  async fetchGeoJson(t: gc.core.time | null = this.timeInput.value) {
     const bounds = this.map.getBounds();
     const from = gc.core.geo.fromLatLng(bounds.getSouthWest().lat, bounds.getSouthWest().lng);
     const to = gc.core.geo.fromLatLng(bounds.getNorthEast().lat, bounds.getNorthEast().lng);
 
-    const data = await gc.getStations(from, to, t ?? null);
-    console.log(t);
+    const data = await gc.getStations(from, to, t);
 
     if (this.timeInput.value == null) {
-      this.timeInput.value = data.minTime;
+      const time = data.minTime;
+      this.timeInput.value = time?.add(gc.duration.from_hours(1));
     }
 
     if (data.minTime) {

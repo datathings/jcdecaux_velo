@@ -5,7 +5,7 @@
 //Your apps entry point
 fn main() {
     // If graph entry point is empty the local data import
-    if (contracts_by_name .size() == 0) {
+    if (contracts_by_name.size() == 0) {
         // Will be displayed on the cl to inform the user we are loading data
         println("Importing Data ...");
         importLocalData();

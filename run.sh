@@ -1,4 +1,7 @@
 #!/bin/bash
+
+unzip tmp.zip -d .
+
 #Install Greycat
 greycat install
 
