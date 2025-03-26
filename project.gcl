@@ -1,5 +1,5 @@
 @include("backend");
-@library("std", "7.0.1638-testing");
+@library("std", "7.0.1685-testing");
 @library("explorer", "7.0.4-testing");
 
 //Your apps entry point
@@ -52,9 +52,4 @@ fn importLocalData() {
 fn exportLocalData() {
     exportData();
     exportRecords();
-}
-
-@expose
-fn test(a: geo) {
-    return stations_by_geo.resolve(a)?.resolve();
 }

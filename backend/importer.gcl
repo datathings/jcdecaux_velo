@@ -49,7 +49,7 @@ fn importStations() {
     //Will return an array of objects with all the contracts
     var data = Http::get("https://api.jcdecaux.com/vls/v1/stations?apiKey=${apiKey}", headers);
 
-    for (_, item: Map in data?) {
+    for (_, item: Map in data) {
         //Get the station number, which is unique by contract
         var number = item.get("number") as int;
 
@@ -216,7 +216,7 @@ fn importData() {
     while (fr.can_read()) {
         var contractObj = fr.read();
 
-        var contractRef = contracts_by_name .get(contractObj.name);
+        var contractRef = contracts_by_name.get(contractObj.name);
 
         if (contractRef == null) {
             var contract = Contract {
@@ -276,7 +276,6 @@ fn importData() {
 // Used for importing and exporting for internal use only
 @volatile
 type InternalRecordsDTO {
-    @format(DurationUnit::microseconds)
     time: time;
     status: StationStatus;
     availableBikes: int;
@@ -286,7 +285,6 @@ type InternalRecordsDTO {
 fn importRecords() {
     var files = File::ls("tmp", ".csv", true);
 
-    var jobs = Array<Job> {};
     for (key, file in files) {
         importRecord(file);
     }
