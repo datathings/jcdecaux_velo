@@ -1,6 +1,9 @@
 gcdata
 tmp
-node_modules
 api_key.txt
 dist
-tmp.zip
+bin
+files
+lib
+node_modules
+webroot

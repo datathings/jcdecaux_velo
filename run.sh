@@ -1,10 +1,10 @@
 #!/bin/bash
 #Install Greycat
-./install.sh
+greycat install
 
 #Build Frontend
 pnpm i
 pnpm build
 
 #Start the server
-greycat serve --user=1
+bin/greycat serve --user=1

@@ -1,24 +1,38 @@
+@import '@greycat/web/greycat.css';
+
+body {
+  height: 100vh;
+}
+
 app-home {
   display: grid;
+  height: 100%;
 
-  gui-heatmap-tooltip .gui-heatmap-tooltip-value{
+  gui-heatmap-tooltip .gui-heatmap-tooltip-value {
     color: var(--text-0) !important;
   }
   article {
     overflow: auto;
-    height :100%;
+    height: 100%;
   }
 
   .profile {
-    padding: var(--spacing);
+    margin: var(--spacing);
     position: relative;
     overflow: auto;
 
     gui-heatmap {
       --m-left: 65px;
+      --m-bottom: 25px;
+      --m-right: 50px;
+      --m-top: 10px;
+
+      --color-scale-m-right: 30px;
 
       width: 100%;
-      height: 350px;
+      height: 400px;
+
+      display: block;
     }
 
     gui-chart {
@@ -43,10 +57,7 @@ app-home {
         text-align: center;
       }
     }
-
   }
-
-
 
   /**Small devices **/
   @media (max-width: 991px) {
@@ -62,7 +73,6 @@ app-home {
         --color-scale-m-right: 15px;
         --m-right: 35px;
       }
-
     }
   }
 
@@ -70,10 +80,6 @@ app-home {
     article {
       display: grid;
       grid-template-columns: 1fr 700px;
-
-      .profile {
-        border-left: 2px solid var(--color-1);
-      }
 
       .empty-profile {
         align-items: center;
@@ -84,5 +90,4 @@ app-home {
       }
     }
   }
-
 }

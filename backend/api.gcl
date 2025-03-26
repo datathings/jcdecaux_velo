@@ -1,9 +1,7 @@
-use model; 
-use util;
-
-
 // Object to be used by the ui
-type StationDTO {
+
+@volatile
+type StationItemView {
     ref: node<Station>;
     coords: geo;
     detail: StationDetail;
@@ -11,26 +9,46 @@ type StationDTO {
     last_update: time;
 }
 
+@volatile
+type StationView {
+    stations: Array<StationItemView>;
+    minTime: time?;
+    maxTime: time?;
+}
+
 // From: the top right corner of the map
 // To: the bottom left corner of the map
 @expose
-fn getStations(from: geo, to: geo, t: time?): Array<StationDTO> {
-    var result: Array<StationDTO> = [];
+fn getStations(from: geo, to: geo, t: time?): StationView {
+    var result = Array<StationItemView> {};
 
+    var min = time::max;
+    var max = time::min;
     // greycat's geo index supports range queries
     for (coords, station in stations_by_geo[from..to]) {
-        if (t == null) {
-            t = station->records.lastTime();
-        }
+        var firstTime = station->records.firstTime();
+        var lastTime = station->records.lastTime();
 
+        // If time point not specified pick the last available one, if that one is also empty time series has no values, skip.
+        if (t == null && lastTime != null) {
+            t = lastTime;
+        }
         if (t == null) {
             continue;
+        }
+
+        // Compute min max time points to limit the time slider in the ui to existing values.
+        if (firstTime != null && min > firstTime) {
+            min = firstTime;
+        }
+        if (lastTime != null && max < lastTime) {
+            max = lastTime;
         }
 
         //will return the last record of the station at the specified time or the closest one before
         var stationData = station->records.resolveAt(t);
 
-        result.add(StationDTO {
+        result.add(StationItemView {
                 ref: station,
                 coords: coords,
                 detail: station->detail.resolve(),
@@ -39,7 +57,11 @@ fn getStations(from: geo, to: geo, t: time?): Array<StationDTO> {
             });
     }
 
-    return result;
+    return StationView {
+        stations: result,
+        minTime: min,
+        maxTime: max
+    };
 }
 
 
@@ -52,7 +74,7 @@ fn getStationProfile(station: node<Station>): Table {
 @expose
 fn getStationTimeSeries(station: node<Station>, from: time?, to: time?): Table {
     //Will return 1000 points on the specifed range or total if none specifed using the adaptative sampling method
-    var table = nodeTime::sample([station->records], from, to, 1000, SamplingMode::adaptative, null, null);
+    var table = nodeTime::sample(Array<nodeTime> {station->records}, from, to, 1000, SamplingMode::adaptative, null, null);
 
     //The returned Talbe  has on col 0 the timestamp and on col 1 the StationData Object, but for the chart visualization we currently do not support objects so we
     //leverage our  table mapping to extract the availableBikes from the StationData object into its own column
@@ -63,6 +85,5 @@ fn getStationTimeSeries(station: node<Station>, from: time?, to: time?): Table {
 
     //The mapping will add a new column with the extracted field
 
-    var mappedTable = Table::applyMappings(table, [mapping]);
-    return mappedTable;
+    return Table::applyMappings(table, Array<TableColumnMapping> {mapping});
 }

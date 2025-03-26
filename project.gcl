@@ -1,28 +1,25 @@
 @include("backend");
-
-use importer;
-use runtime;
-use io;
-use model;
+@library("std", "7.0.1685-testing");
+@library("explorer", "7.0.4-testing");
 
 //Your apps entry point
 fn main() {
-    // If graph entry point is not defined start the local data import
-    if (contracts_by_name == null) {
+    // If graph entry point is empty the local data import
+    if (contracts_by_name .size() == 0) {
         // Will be displayed on the cl to inform the user we are loading data
         println("Importing Data ...");
         importLocalData();
+        println("Done");
     }
 
     //Check if the api key is present, if so start the scheduler
     var key = File::open("api_key.txt");
     if (key != null) {
-        startImportingScheduler();
+        // startImportingScheduler();
     }
 }
 
 @expose
-@write
 fn startImportingScheduler() {
     var periodicStationTask = PeriodicTask {
         arguments: null,
@@ -41,13 +38,12 @@ fn startImportingScheduler() {
     };
 
     //Greycats own integrated job scheduler refer to the documentation for more information unde Features -> Periodic
-    PeriodicTask::set([periodicContractTask, periodicStationTask]);
+    PeriodicTask::set(Array<PeriodicTask> {periodicContractTask, periodicStationTask});
 }
 
 
 
 //Boostrap the data, for demo purposes
-@write
 fn importLocalData() {
     importData();
     importRecords();

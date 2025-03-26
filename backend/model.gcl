@@ -1,7 +1,4 @@
-use util;
-
 var stations_by_geo: nodeGeo<node<Station>>;
-
 // will contain all contracts indexed by contract name
 var contracts_by_name: nodeIndex<String, node<Contract>>?;
 
@@ -36,39 +33,35 @@ type StationRecord {
     available_bikes: int;
 }
 enum StationStatus {
-    open("open");
-    closed("closed");
+    open("OPEN");
+    closed("CLOSED");
 }
 
 type StationProfile {
     //24 * 7 slots, one for each hour of the week, will help to visualize the station activity in a typical week
     hourlyProfile: GaussianProfile;
+    hourlyQuantizer: MultiQuantizer;
 
     fn updateProfile(t: time, data: StationRecord) {
         if (data.bike_stands > 0) {
             //convert the time to the correct slot
-            var quantizer = Quantizer::new();
-            quantizer.configure([DenseDim { min: 0, max: 6, step: 1 }, DenseDim { min: 0, max: 23, step: 1 }]);
-            var date = t.toDateUTC();
-            var slot = quantizer.quantize([date.dayOfWeek(), date.hours()]);
-
-            this.hourlyProfile.add(slot, data.available_bikes as float / data.bike_stands as float);
+            var date = t.toDate(null);
+            var slot = this.hourlyProfile.quantizer.quantize(Array<int> {t.dayOfWeek(null), date.hour});
+            this.hourlyProfile.add(this.hourlyQuantizer.slot_vector(slot), data.available_bikes as float / data.bike_stands as float);
         }
     }
 
     fn profileToTable(): Table {
-        var table = Table::new(24);
-
+        var table = Table {};
         var endSlot = 24 * 7;
         var startSlot = 0;
 
         while (startSlot < endSlot) {
             var row = startSlot / 24;
             var col = startSlot % 24;
+            var val = this.hourlyProfile.avg(Array<int> {row, col});
 
-            var val = this.hourlyProfile.avg(startSlot);
-
-            table.set(row, col, val);
+            table.set_cell(row, col, val);
             startSlot++;
         }
         return table;

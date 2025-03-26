@@ -1,5 +1,5 @@
 {
-  "name": "greycat-template-web",
+  "name": "greycat-demo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,24 +10,20 @@
     "lint": "pnpm lint:app && pnpm lint:server",
     "lint:app": "eslint frontend/common frontend/components frontend/pages -c ./.eslintrc.cjs --report-unused-disable-directives --max-warnings 0",
     "lint:server": "greycat-lang lint",
-    "gen": "greycat codegen frontend/common/project"
+    "gen": "greycat codegen"
   },
   "dependencies": {
-    "@greycat/web": "https://get.greycat.io/files/sdk/web/testing/6.10/6.10.48-testing.tgz",
-    "@shoelace-style/shoelace": "2.15.0",
-    "@tabler/icons": "3.3.0",
-    "maplibre-gl": "4.2.0"
+    "@greycat/web": "https://get.greycat.io/files/sdk/web/testing/7.0/7.0.14-testing.tgz",
+    "maplibre-gl": "5.1.0"
   },
   "devDependencies": {
     "@types/node": "20.12.8",
     "@typescript-eslint/eslint-plugin": "7.8.0",
     "@typescript-eslint/parser": "7.8.0",
     "eslint": "8.56.0",
-    "http-proxy": "1.18.1",
     "lightningcss": "1.24.1",
     "prettier": "3.2.5",
-    "typescript": "5.4.5",
-    "vite": "5.2.11",
-    "@eslint/js": "9.1.1"
+    "typescript": "5.8.2",
+    "vite": "6.2.3"
   }
 }

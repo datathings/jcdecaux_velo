@@ -1,17 +1,20 @@
 import maplibregl, { StyleSpecification } from 'maplibre-gl';
 import style from './styles.json';
-import { api } from '../../common/project';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './app-map.css';
-import { core } from '@greycat/web';
+import { GuiInputTime } from '@greycat/web';
 
 export class AppMap extends HTMLElement {
   map!: maplibregl.Map;
   interval?: number;
 
-  selectedTime = Date.parse('2024-05-15T14:16:53.000Z');
+  selectedTime = Date.now();
+  minTime: gc.time | null = null;
+  maxTime: gc.time | null = null;
 
-  stationsMap: Map<number, api.StationDTO> = new Map();
+  stationsMap: Map<number, gc.StationItemView> = new Map();
+
+  timeInput!: GuiInputTime;
 
   constructor() {
     super();
@@ -133,7 +136,6 @@ export class AppMap extends HTMLElement {
         // based on the feature found.
 
         const station = this.stationsMap.get(e.features[0].id as number);
-        console.log(station);
         if (station === undefined) return;
 
         popup
@@ -169,40 +171,22 @@ export class AppMap extends HTMLElement {
         this.fetchGeoJson(core.time.fromMs(this.selectedTime));
       });
 
-      // *** Historic data setting ***
-      // comment this section if you want to work with newly crawled data
-      const start = Date.parse('2024-05-15T14:16:53.000Z');
-      const end = new Date(start + (Number(core.duration.WEEK) / 1000) * 2).getTime(); // Add 2 weeks to the start date since thats the range of our data
-      // *** Historic data setting ***
-
-      // *** Current data setting ***
-      // uncomment this section if you want to work with newly crawled data
-      // const start = Date.parse('2024-07-11T15:00'); // fill in start date of your data crawling
-      // const end = Date.now(); // end at curent time
-      // *** Current data setting ***
-
-      const timeSliderValue = <span> {new Date(this.selectedTime).toLocaleString()} </span>;
+      this.timeInput = (
+        <gui-input-time
+          id="time-slider-input"
+          ongui-change={(e) => {
+            if (e.detail) {
+              this.fetchGeoJson(e.detail);
+              this.selectedTime = e.detail;
+            }
+          }}
+        />
+      ) as GuiInputTime;
 
       const timeSlider = (
         <div id={'time-slider'}>
-          <label htmlFor="">Time: {timeSliderValue}</label>
-          <input
-            id="time-slider-input"
-            type="range"
-            step={'3600000'}
-            onchange={(e) => {
-              //eslint-disable-next-line
-              const val = parseInt((e.target as any).value);
-              timeSliderValue.textContent = new Date(val).toLocaleString();
-              const time = core.time.fromMs(val);
-              this.fetchGeoJson(time);
-              this.selectedTime = val;
-            }}
-            min={start.toString()}
-            max={end.toString()}
-            value={this.selectedTime.toString()}
-          />
-          <button
+          {this.timeInput}
+          <sl-button
             style={{ width: '50px' }}
             onclick={(e) => {
               if (this.interval) {
@@ -210,25 +194,25 @@ export class AppMap extends HTMLElement {
                 this.interval = undefined;
                 (e.target as HTMLButtonElement).textContent = '⏵';
               } else {
-                const input = this.querySelector('#time-slider-input') as HTMLInputElement;
                 (e.target as HTMLButtonElement).textContent = '⏸';
-                this.interval = setInterval(() => {
-                  input.value = (parseInt(input.value) + 3600000).toString();
-                  if (input.value >= end.toString()) {
-                    input.value = start.toString();
-                    (e.target as HTMLButtonElement).textContent = '⏵';
-                    input.dispatchEvent(new Event('change'));
-
-                    clearInterval(this.interval);
-                    this.interval = undefined;
+                this.interval = window.setInterval(() => {
+                  if (this.timeInput.value && this.maxTime) {
+                    this.timeInput.value = this.timeInput.value.add(gc.duration.from_hours(1));
+                    if (this.timeInput.value >= this.maxTime) {
+                      this.timeInput.value = this.minTime;
+                      (e.target as HTMLButtonElement).textContent = '⏵';
+                      clearInterval(this.interval);
+                      this.interval = undefined;
+                    } else {
+                      this.fetchGeoJson(this.timeInput.value);
+                    }
                   }
-                  input.dispatchEvent(new Event('change'));
-                }, 500);
+                }, 1000);
               }
             }}
           >
             ⏵
-          </button>
+          </sl-button>
         </div>
       );
 
@@ -252,15 +236,29 @@ export class AppMap extends HTMLElement {
 
   disconnectedCallback() {}
 
-  async fetchGeoJson(t?: core.time) {
+  async fetchGeoJson(t?: gc.core.time) {
     const bounds = this.map.getBounds();
-    const from = core.geo.fromLatLng(bounds.getSouthWest().lat, bounds.getSouthWest().lng);
-    const to = core.geo.fromLatLng(bounds.getNorthEast().lat, bounds.getNorthEast().lng);
+    const from = gc.core.geo.fromLatLng(bounds.getSouthWest().lat, bounds.getSouthWest().lng);
+    const to = gc.core.geo.fromLatLng(bounds.getNorthEast().lat, bounds.getNorthEast().lng);
 
-    const data = await api.getStations(from, to, t ?? null);
+    const data = await gc.getStations(from, to, t ?? null);
+    console.log(t);
+
+    if (this.timeInput.value == null) {
+      this.timeInput.value = data.minTime;
+    }
+
+    if (data.minTime) {
+      this.timeInput.input.min = data.minTime.toDate().toISOString().slice(0, -8);
+      this.minTime = data.minTime;
+    }
+    if (data.maxTime) {
+      this.timeInput.input.max = data.maxTime.toDate().toISOString().slice(0, -8);
+      this.maxTime = data.maxTime;
+    }
 
     this.stationsMap.clear();
-    const features: GeoJSON.Feature[] = data.map((station, idx) => {
+    const features: GeoJSON.Feature[] = data.stations.map((station, idx) => {
       this.stationsMap.set(idx, station);
 
       return {
@@ -273,7 +271,7 @@ export class AppMap extends HTMLElement {
         properties: {
           availability:
             Number(station.record?.available_bikes ?? 1) / Number(station.record?.bike_stands ?? 1),
-          status: station.record?.status.value,
+          status: station.record?.status.key,
         },
       };
     });
@@ -290,9 +288,11 @@ declare global {
     'app-map': AppMap;
   }
 
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-map': GreyCat.Element<AppMap>;
+  namespace GreyCat {
+    namespace JSX {
+      interface IntrinsicElements {
+        'app-map': GreyCat.Element<AppMap>;
+      }
     }
   }
 }
