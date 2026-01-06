@@ -1,5 +1,4 @@
-// Object to be used by the ui
-
+/// Used by the frontend to display station
 @volatile
 type StationItemView {
     ref: node<Station>;
@@ -9,6 +8,7 @@ type StationItemView {
     last_update: time;
 }
 
+/// Used by the frontend to display a station
 @volatile
 type StationView {
     stations: Array<StationItemView>;
@@ -16,15 +16,15 @@ type StationView {
     maxTime: time?;
 }
 
-// From: the top right corner of the map
-// To: the bottom left corner of the map
+/// `from`: the top right corner of the map
+/// `to`: the bottom left corner of the map
 @expose
 fn getStations(from: geo, to: geo, t: time?): StationView {
     var result = Array<StationItemView> {};
-
     var min = time::max;
     var max = time::min;
-    // greycat's geo index supports range queries
+
+    // GreyCat's geo index supports range queries
     for (coords, station in stations_by_geo[from..to]) {
         var firstTime = station->records.firstTime();
         var lastTime = station->records.lastTime();
@@ -45,16 +45,18 @@ fn getStations(from: geo, to: geo, t: time?): StationView {
             max = lastTime;
         }
 
-        //will return the last record of the station at the specified time or the closest one before
+        // Will return the last record of the station at the specified time or the closest one before
         var stationData = station->records.resolveAt(t);
 
-        result.add(StationItemView {
+        result.add(
+            StationItemView {
                 ref: station,
                 coords: coords,
                 detail: station->detail.resolve(),
                 record: stationData,
                 last_update: t
-            });
+            }
+        );
     }
 
     return StationView {
@@ -64,8 +66,7 @@ fn getStations(from: geo, to: geo, t: time?): StationView {
     };
 }
 
-
-//Return the profile of a station to visualize as a Heatmap  where the cols are the hours of the day and the rows are the days of the week
+/// Return the profile of a station to visualize as a Heatmap  where the cols are the hours of the day and the rows are the days of the week
 @expose
 fn getStationProfile(station: node<Station>): Table {
     return station->profile->profileToTable();
@@ -73,17 +74,24 @@ fn getStationProfile(station: node<Station>): Table {
 
 @expose
 fn getStationTimeSeries(station: node<Station>, from: time?, to: time?): Table {
-    //Will return 1000 points on the specifed range or total if none specifed using the adaptative sampling method
-    var table = nodeTime::sample(Array<nodeTime> {station->records}, from, to, 1000, SamplingMode::adaptative, null, null);
+    // Will return 1000 points on the specifed range or total if none specifed using the adaptative sampling method
+    var table = nodeTime::sample(
+        Array<nodeTime> { station->records },
+        from,
+        to,
+        1000,
+        SamplingMode::adaptative,
+        null,
+        null
+    );
 
-    //The returned Talbe  has on col 0 the timestamp and on col 1 the StationData Object, but for the chart visualization we currently do not support objects so we
-    //leverage our  table mapping to extract the availableBikes from the StationData object into its own column
+    // The returned Talbe  has on col 0 the timestamp and on col 1 the StationData Object, but for the chart visualization we currently do not support objects so we
+    // leverage our  table mapping to extract the availableBikes from the StationData object into its own column
     var mapping = TableColumnMapping {
-        column: 1, //The column where the object is
-        extractors: ["available_bikes"] //The fields to extract
+        column: 1,  // The column where the object is
+        extractors: ["available_bikes"] // The fields to extract
     };
 
-    //The mapping will add a new column with the extracted field
-
-    return Table::applyMappings(table, Array<TableColumnMapping> {mapping});
+    // The mapping will add a new column with the extracted field
+    return Table::applyMappings(table, Array<TableColumnMapping> { mapping });
 }

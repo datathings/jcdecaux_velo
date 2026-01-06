@@ -1,55 +1,29 @@
-@include("backend");
-@library("std", "7.0.1685-testing");
-@library("explorer", "7.0.4-testing");
+@library("std", "7.5.142-stable");    // explicitly set the version of GreyCat
+@library("explorer", "7.5.8-stable"); // add the Explorer to the project
 
-//Your apps entry point
+@include("backend"); // tell GreyCat to load modules from that directory
+
+/// The project entrypoint
 fn main() {
-    // If graph entry point is empty the local data import
-    if (contracts_by_name.size() == 0) {
-        // Will be displayed on the cl to inform the user we are loading data
-        println("Importing Data ...");
-        importLocalData();
-        println("Done");
-    }
-
-    //Check if the api key is present, if so start the scheduler
-    var key = File::open("api_key.txt");
-    if (key != null) {
-        // startImportingScheduler();
-    }
+    import_contracts(); // manually import contracts
+    import_stations(); // manually import stations
+    schedule_importers(); // schedule periodic imports
 }
 
-@expose
-fn startImportingScheduler() {
-    var periodicStationTask = PeriodicTask {
-        arguments: null,
-        every: 5_min,
-        user_id: 1,
-        function: importer::importStations,
-        start: time::now()
-    };
-
-    var periodicContractTask = PeriodicTask {
-        arguments: null,
-        every: 1_day,
-        user_id: 1,
-        function: importer::importContracts,
-        start: time::now()
-    };
-
-    //Greycats own integrated job scheduler refer to the documentation for more information unde Features -> Periodic
-    PeriodicTask::set(Array<PeriodicTask> {periodicContractTask, periodicStationTask});
+fn schedule_importers() {
+    // import stations every 5 minutes
+    Scheduler::add(importer::import_stations, FixedPeriodicity { every: 5min }, null);
+    // import contracts every day at midnight
+    Scheduler::add(importer::import_contracts, DailyPeriodicity {}, null);
 }
 
-
-
-//Boostrap the data, for demo purposes
-fn importLocalData() {
-    importData();
-    importRecords();
+/// Boostrap the data, for demo purposes
+fn import_local_data() {
+    import_data();
+    import_records();
 }
 
-fn exportLocalData() {
-    exportData();
-    exportRecords();
+fn export_local_data() {
+    export_data();
+    export_records();
 }

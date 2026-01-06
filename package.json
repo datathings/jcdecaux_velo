@@ -13,7 +13,7 @@
     "gen": "greycat codegen"
   },
   "dependencies": {
-    "@greycat/web": "https://get.greycat.io/files/sdk/web/testing/7.0/7.0.14-testing.tgz",
+    "@greycat/web": "https://get.greycat.io/files/sdk/web/stable/7.5/7.5.16-stable.tgz",
     "maplibre-gl": "5.1.0"
   },
   "devDependencies": {

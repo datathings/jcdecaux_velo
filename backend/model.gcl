@@ -1,21 +1,20 @@
+/// All stations indexed by coordinates
 var stations_by_geo: nodeGeo<node<Station>>;
-// will contain all contracts indexed by contract name
+
+/// All contracts indexed by contract name
 var contracts_by_name: nodeIndex<String, node<Contract>>;
 
 type Station {
     number: int;
     position: geo;
-
-    // will contain all static information about the Station
-    // you will want to put information that is not important inside a node to avoid loading it into memory on every Station resolve
+    /// Static information about the Station
+    ///
+    /// We want that data to be lazily loaded, therefore we put it in a node
     detail: node<StationDetail>;
-
-    // will contain all dynamic data of a station indexed by the last update timestamp
+    /// Dynamic data of a station indexed by the last update timestamp
     records: nodeTime<StationRecord>;
-
-    //The stations Contract,  Belongs To relationship in sql
+    /// The stations Contract, this is a graph edge or an SQL relationship
     contract: node<Contract>;
-
     profile: node<StationProfile>;
 }
 
@@ -32,22 +31,26 @@ type StationRecord {
     available_bike_stands: int;
     available_bikes: int;
 }
+
 enum StationStatus {
-    open("OPEN");
-    closed("CLOSED");
+    OPEN,
+    CLOSED,
 }
 
 type StationProfile {
-    //24 * 7 slots, one for each hour of the week, will help to visualize the station activity in a typical week
+    /// `24 * 7` slots, one for each hour of the week, will help to visualize the station activity in a typical week
     hourlyProfile: GaussianProfile;
     hourlyQuantizer: MultiQuantizer;
 
     fn updateProfile(t: time, data: StationRecord) {
         if (data.bike_stands > 0) {
-            //convert the time to the correct slot
+            // Convert the time to the correct slot
             var date = t.toDate(null);
-            var slot = this.hourlyProfile.quantizer.quantize(Array<int> {t.dayOfWeek(null), date.hour});
-            this.hourlyProfile.add(this.hourlyQuantizer.slot_vector(slot), data.available_bikes as float / data.bike_stands as float);
+            var slot = this.hourlyProfile.quantizer.quantize(Array<int> { t.dayOfWeek(null), date.hour });
+            this.hourlyProfile.add(
+                this.hourlyQuantizer.slot_vector(slot),
+                data.available_bikes as float / data.bike_stands as float
+            );
         }
     }
 
@@ -59,7 +62,7 @@ type StationProfile {
         while (startSlot < endSlot) {
             var row = startSlot / 24;
             var col = startSlot % 24;
-            var val = this.hourlyProfile.avg(Array<int> {row, col});
+            var val = this.hourlyProfile.avg(Array<int> { row, col });
 
             table.set_cell(row, col, val);
             startSlot++;
@@ -74,6 +77,8 @@ type Contract {
     country_code: String?;
     cities: Array<String>?;
 
-    //will contain a list of refs to all stations of the contract indexed by the number property, Has Many relationship in sql
+    /// list of nodes to all stations of the contract indexed by the number property
+    ///
+    /// This translates to a "many relationship" in SQL
     stations: nodeIndex<int, node<Station>>;
 }
