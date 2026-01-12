@@ -35,7 +35,7 @@ private type JsonStation {
     /// indicates whether this station is `"CLOSED"` or `"OPEN"`
     status: StationStatus;
     /// timestamp indicating the last update time in milliseconds
-    last_update: int;
+    last_update: int?;
 }
 
 /// Tries to load the API key from env var `"JCDECAUX_API_KEY"`
@@ -109,6 +109,10 @@ fn import_stations() {
     );
 
     for (_, item in data) {
+        if (item.last_update == null) {
+            continue;
+        }
+
         // Get the station number, which is unique by contract
         var number = item.number;
 
